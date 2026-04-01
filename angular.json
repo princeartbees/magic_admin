@@ -40,12 +40,7 @@
               "node_modules/primeng/resources/primeng.min.css"
             ],
             "scripts": ["src/assets/js/swiper-bundle.min.js",
-          "node_modules/jquery/dist/jquery.js"],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
+          "node_modules/jquery/dist/jquery.js"]
           },
           "configurations": {
             "production": {

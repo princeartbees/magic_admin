@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "admin-8cab4",
+    "init": "admin-b8d03"
+  },
+  "targets": {},
+  "etags": {}
+}
