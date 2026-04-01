@@ -1,0 +1,91 @@
+<div class="w-full px-4 pb-8">
+  <div class="flex items-center">
+    <span class="hidden lg:block text-lg md:text-xl lg:text-2xl xl:text-26 font-bold text-dark">{{"My Account" | translate}}</span>
+    <span class="text-base font-semibold text-primary border border-primary py-2 px-5 rounded-md cursor-pointer ml-auto" (click)="getEditProfile()">{{"Save" | translate}}</span>
+  </div>
+  <form class="flex flex-wrap -mx-4 lg:mt-4" [formGroup]="personalInfoForm">
+    <div class="w-full md:w-1/2 lg:w-full xl:w-1/2 p-4">
+      <div class="w-full h-full bg-l3 space-y-5 rounded-lg p-6">
+        <div >
+          <span class="block text-lg font-bold text-dark">{{"Personal Information" | translate}}</span>
+          <div class="w-16 h-16 rounded-full mx-auto relative mt-6">
+            <div class="ac_profile">
+              <p-image [src]="imageUrl ? constents.baseImageUrl + imageUrl : constents?.defaultImage" [preview]="true" alt="User" class="absolute inset-0 w-full h-full rounded-full object-cover"></p-image>
+            </div>
+            <div class="absolute right-0 bottom-0 w-6 h-6 border border-white bg-d1 rounded-full flex items-center justify-center">
+              <span class="icon-edit text-[12px] text-secondary text-center cursor-pointer"></span>
+              <input type="file" class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer" name="upload" id="upload" (change)="uploadImage($event)"/>
+            </div>
+          </div>
+        </div>
+        <div >
+          <label for="full_name" class="block text-lg font-medium">{{"Full Name" | translate}} </label>
+          <div class="relative">
+            <input type="text" id="full_name" class="w-full text-base font-medium text-dark block bg-white border border-l1 rounded-lg outline-none pr-16 px-5 py-3 mt-2.5" formControlName="fullName">
+          </div>
+        </div>
+        <div >
+          <label for="gender" class="block text-lg font-medium">{{"Gender" | translate}}</label>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" formControlName="gender" >
+              <mat-radio-button class="example-radio-button" value="male">{{"Male" | translate}}</mat-radio-button>
+              <mat-radio-button class="example-radio-button" value="female">{{"Female" |translate}}</mat-radio-button>
+              <mat-radio-button class="example-radio-button" value="other">{{"Other" | translate}}</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+    </div>
+    <div class="w-full md:w-1/2 lg:w-full xl:w-1/2 p-4">
+      <div class="w-full h-full bg-l3 rounded-lg p-6">
+        <span class="block text-lg font-bold text-dark pb-5">{{"Email Address & Mobile" | translate}}</span>
+        <div class="relative pb-5">
+          <label for="full_name" class="block text-lg font-medium">{{"Email" | translate}}</label>
+          <input type="eamil" id="full_name" class="w-full text-base font-medium text-gray-400 block bg-white border border-l1 rounded-lg outline-none px-5 py-3 mt-2.5" formControlName="email">
+        </div>
+        <div class="relative loginTel space-y-2.5 pt-1 pb-5" #phoneF="ngForm" [formGroup]="phoneForm">
+          <label class="block text-lg font-medium pb-2.5">{{"Mobile Number" | translate}}</label>
+          <ngx-intl-tel-input
+          [cssClass]="'block w-full'"
+          [ngClass]="{'tel-invalid' : ((phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)) || (!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched))}"
+          [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone"></ngx-intl-tel-input>
+          <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)"> Please enter valid Contact Number.</span>
+          <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched"> Please enter Contact Number.</span>
+        </div>
+        <div class="currency-dropdown">
+          <label class="block text-lg font-medium pb-2.5">{{"Currency" | translate}}</label>
+          <input type="text" id="full_name" class="w-full text-base font-medium text-gray-400 block bg-white border border-l1 rounded-lg outline-none px-5 py-3 mt-2.5" formControlName="currency">
+        </div>
+      </div>
+    </div>
+    <div class="w-full p-4">
+      <div class="space-y-3.5 lg:space-y-5">
+        <div class="address p-3 lg:p-5 rounded-md space-y-4 bg-d2">
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group space-y-4" (change)="selectedAddressChange($event)">
+            <mat-radio-button class="example-radio-button flex align-items-center rounded-md bg-white p-3 px-5" *ngFor="let item of addressDetailsList;let i = index;" [value]="item._id" [checked]="item?.select">
+              {{item?.building}} , {{item?.sector}} , {{item?.city}} , {{item?.state}} , {{item?.pincode}}
+              <span>
+                <span class="text-sm xl:text-base font-medium text-primary underline cursor-pointer ml-auto" (click)="editAddress(item)">{{"Edit" | translate}}</span>
+                <span class="text-sm xl:text-base font-medium text-primary underline cursor-pointer ml-5" (click)="deleteAddress(item)">{{"Delete" | translate}}</span>
+              </span>
+            </mat-radio-button>
+          </mat-radio-group>
+          <div class="flex items-center justify-between space-x-3">
+            <div class="space-x-1 flex items-center cursor-pointer" *ngIf="!isAddEditAddress">
+              <span class="inline-block icon-pluse text-14 text-primary"></span>
+              <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center" (click)="isAddEditAddress = true">{{"Add a new address" | translate}}</span>
+            </div>
+            <div class="space-x-1 flex items-center cursor-pointer" *ngIf="isAddEditAddress">
+              <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center" (click)="isAddEditAddress = false">{{"Cancel address" | translate}}</span>
+            </div>
+          </div> 
+        </div>
+        <!-- address change/add form  -->
+        <div class="mt-5" *ngIf="!isAddEditAddressLoading && isAddEditAddress">
+          <app-add-edit-address [addressObj]="selectedAddress" (saveAndAddEditAddress)="addressAddEdit($event)"></app-add-edit-address>
+        </div>
+        <div class="relative mt-5" *ngIf="isAddEditAddressLoading && !isAddEditAddress">
+          <div class="w-full bg-gray-200 animatie-pulse text-xl font-semibold text-dark text-center p-10">{{'please wait' | titlecase}}</div>
+        </div>
+      </div> 
+    </div>
+  </form>
+</div>

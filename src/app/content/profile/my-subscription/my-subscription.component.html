@@ -1,0 +1,166 @@
+<div class="space-y-5 xl:space-y-7 w-full px-4 pb-8">
+  <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"My Plan" | translate}}</span>
+  <div  *ngIf="!isLoading">
+    <div class="space-y-3 xl:space-y-5" infiniteScroll [infiniteScrollDistance]="0.1" (scrolled)="onScroll()" *ngIf="planList?.length > 0">
+      <div class="p-4 rounded-2xl bg-d2" *ngFor="let item of planList">
+        <div class="flex flex-wrap items-center -mx-2.5">
+          <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+            <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+              <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+            </div>
+          </div>
+          <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="w-full sm:w-auto text-xs lg:text-sm font-medium" [ngClass]="item?.planstatus == 'Active' ? 'text-[#11A75C]' : item?.planstatus == 'Expired' ? 'text-[#FF3B30]' : item?.planstatus == 'Cancelled' ? 'text-[#FF3B30]' : 'text-dark' ">{{item?.planstatus == 'Active' ? 'Active' : item?.planstatus == 'Expired' ? 'Expired' : item?.planstatus == 'Cancelled' ? 'Cancelled' : 'Cancelled'}}</span>
+              <span class="w-full sm:w-auto text-xs lg:text-sm font-medium text-d4">{{"Order" | translate}} # {{item?.orderid}}</span>
+            </div>
+            <h3 class="h3 relative">{{item?.planid?.planname}}  <!-- <span class="inline-block icon-alert text-d5 h3 pl-2"></span>  --></h3>
+            <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+              <div class="w-full max-w-[310px]">
+                <ul class="space-y-1.5">
+                  <li class="flex items-center justify-between">
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Plan" | translate}}:</span>
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{item?.planid?.duration}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Plan price" | translate}}:</span>
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{item?.planid?.discounted_inr_amount ? '₹'  + item?.planid?.discounted_inr_amount : '$' + item?.planid?.discounted_usd_amount}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Expires On" | translate}}:</span>
+                    <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{item?.delivery?.[item?.delivery?.length - 1]?.deliverydate  | date:'MM-dd-yyyy'}}</span>
+                  </li>
+                </ul>
+              </div>
+              <span class="block text-sm font-semibold text-primary underline cursor-pointer" *ngIf="item?.planstatus == 'Expired'" (click)="renewPlan(item)">{{"Renew Plan" | translate}}</span>
+              <span class="block text-sm font-semibold text-primary underline cursor-pointer" (click)="cancelPlan(item)" *ngIf="item?.planstatus == 'Active'">{{"Cancel Plan" | translate}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-full bg-gray-400/30 rounded-xl shadow-lg p-7" *ngIf="planList?.length == 0">
+      <span class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-dark text-center">{{"You don't have any buy plan" | translate}}</span>
+    </div>
+  </div>
+  <div class="space-y-3 xl:space-y-5" *ngIf="isLoading">    
+    <div class="flex flex-wrap items-center animate-pulse bg-d2 -mx-2.5">
+      <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+        <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+          <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+        </div>
+      </div>
+      <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+        </div>
+        <h3 class="h3 relative bg-gray-300 rounded-md"> &nbsp;</h3>
+        <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+          <div class="w-full max-w-[310px]">
+            <ul class="space-y-1.5">
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan price:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Expires On:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center animate-pulse bg-d2 -mx-2.5">
+      <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+        <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+          <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+        </div>
+      </div>
+      <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+        </div>
+        <h3 class="h3 relative bg-gray-300 rounded-md"> &nbsp;</h3>
+        <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+          <div class="w-full max-w-[310px]">
+            <ul class="space-y-1.5">
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan price:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Expires On:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center animate-pulse bg-d2 -mx-2.5">
+      <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+        <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+          <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+        </div>
+      </div>
+      <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+          <span class="w-full sm:w-1/4 text-xs lg:text-sm font-medium bg-gray-300 rounded-md"> &nbsp;</span>
+        </div>
+        <h3 class="h3 relative bg-gray-300 rounded-md"> &nbsp;</h3>
+        <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+          <div class="w-full max-w-[310px]">
+            <ul class="space-y-1.5">
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan price:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Expires On:</span>
+                <span class="w-[150px] text-xs lg:text-sm font-medium p-0.5 bg-gray-300 rounded-md">&nbsp;</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fixed top-0 left-0 w-full h-screen z-[9998]" *ngIf="isOpenCancelPlanForm">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none" (click)="isOpenCancelPlanForm = !isOpenCancelPlanForm" *ngIf="isOpenCancelPlanForm"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <div class="w-full max-w-[500px] md:min-w-[500px] rounded-2xl bg-d2 px-6 xl:px-8 py-10 xl:py-12">
+      <div class="flex items-center justify-between">
+        <span class="text-xl xl:text-24 text-secondary font-bold">{{"Cancel Subscription" | translate}}</span>
+        <a href="#"><span class="icon-close text-14"></span></a>
+      </div>
+      <div class="my-6 lg:my-8">
+        <div class="relative pb-5 space-y-2">
+          <span class="block xl_titel font-medium">{{"Reason" | translate}}</span>
+          <input class="w-full p-3 lg:p-4 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" [(ngModel)]="cancelPlanforReason" placeholder="What's Most Important To Know?" type="text" name="titel" id="titel">
+          <span class="absolute bottom-0 left-0 text-xs text-red-600 font-semibold" *ngIf="isCancelPlanError">*please enter reason for cancel plan</span>
+        </div>
+      </div>
+      <div class="flex space-x-5">
+        <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5 bg-transparent text-primary hover:text-white hover:bg-primary" (click)="isOpenCancelPlanForm = !isOpenCancelPlanForm" >{{"Cancel" | translate}}</button>
+        <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5" (click)="createCancelPlan()">{{"Cancel Subscription" | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

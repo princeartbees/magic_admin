@@ -1,0 +1,22 @@
+<div class="bg-d2 w-full max-w-[500px] md:min-w-[500px] rounded-3xl">
+  <div class="relative z-10 px-5 lg:px-6 xl:px-7 py-5 md:py-8 lg:py-10 xl:py-12">
+    <div class="sm:flex justify-between pb-5 lg:pb-6 xl:pb-7">
+        <div class="text-18 lg:text-24 font-bold text-secondary">Please enter the Register OTP sent to
+        <span class="block text-primary">{{viewEmailAddress}}</span>
+        </div>
+        <div class="flex flex-col items-end">
+          <span class="icon-close text-xl rounded-full border border-d2 text-secondary cursor-pointer" *ngIf="isUnknowUser" (click)="closeDialog()"></span>
+          <span class="inline-block text-16 lg:text-18 font-medium text-primary underline cursor-pointer mt-auto" (click)="changeEmail()">Change</span>
+        </div>
+    </div>
+    <form>
+        <ng-otp-input (onInputChange)="onOtpChange($event)" [formCtrl]="otp" [config]="otpInputConfig"></ng-otp-input>
+        <button class="inline-block w-full btn_primary text-sm px-3.5 lg:px-6 xl:px-10 sm:text-base xl:text-lg anim py-3 xl:py-4 mt-5 lg:mt-7" (click)="verifyOtp()">Verify</button>
+    </form>
+    <div class="text-center pt-3 xl:pt-4">
+        <div class="text-16 text-secondary font-normal">Not received your code?
+        <span class="text-primary font-medium" id="showTimer" *ngIf="isShowTimer">{{display}}</span>
+        <span class="text-primary font-medium underline cursor-pointer" id="showResendOTP" *ngIf="!isShowTimer" (click)="resendOTP()">Resend OTP</span>
+    </div> 
+  </div>
+</div>

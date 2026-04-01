@@ -1,0 +1,126 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+    <div class="relative wrapper text-center space-y-3.5 z-10">
+      <h1 class="h1">{{"Support" | translate}}</h1>
+      <div class="flex items-center justify-center space-x-2">
+        <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">{{"Home" | translate}}</span>
+        <span>
+          <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0L9.79611 5.52786H15.6085L10.9062 8.94427L12.7023 14.4721L8 11.0557L3.29772 14.4721L5.09383 8.94427L0.391548 5.52786H6.20389L8 0Z" fill="#0F172A"/> </svg>
+        </span>
+        <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Support" | translate}}</span>
+      </div>
+    </div>
+    <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover"/>
+</section>
+<div class="w-full py-12 lg:py-16 xl:py-20 2xl:py-24">
+  <div class="wrapper">
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs="false" mat-align-tabs="start">
+      <mat-tab label="FAQ">
+        <mat-accordion>
+          <div class="w-full overflow-hidden">
+            <div class="flex flex-wrap items-start justify-center xl:justify-normal -mx-1.5 sm:-mx-2.5">
+              @for (faq of faqList; track $index) {
+                <div class="max-w-xl md:max-w-full w-full md:w-1/2 p-1.5 sm:p-2.5">
+                  <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                      <mat-panel-title><span class="block text-base md:text-lg lg:text-xl 2xl:text-24 font-medium">{{faq?.faqTitel | translate}}</span></mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <div class="text-sm md:text-base xl:text-lg text-gray"> {{faq?.faqDescription | translate}} </div>
+                  </mat-expansion-panel>
+                </div>
+              }
+            </div>
+          </div>
+        </mat-accordion>
+      </mat-tab>
+      <mat-tab label="Send Message">
+        <div class="bg-d2 rounded-xl overflow-hidden">
+            <div class="flex flex-wrap items-center">
+                <div class="w-full md:w-2/5 text-center p-6 space-y-10 md:space-y-32 lg:space-y-40 xl:space-y-48">
+                    <div class="text-26 md:text-36 lg:text-44 xl:text-48 font-bold text-secondary">{{"Get In Message" | translate}}</div>
+                    <img src="./assets/images/get-in-message.webp" alt="Get In Message" class="mx-auto" />
+                </div>
+                <div class="relative w-full md:w-3/5">
+                    <div class="relative z-10 px-6 md:px-10 lg:px-14 xl:px-[70px] py-10 md:py-16 lg:py-20 xl:py-[100px]">
+                        <div class="text-18 lg:text-24 xl:text-26 font-bold text-secondary pb-5 lg:pb-6 xl:pb-7">{{"Please fill in the form and describe your issue" | translate}}:</div>
+                        <form class="space-y-3 lg:space-y-4 xl:space-y-5" #supportNgForm="ngForm" [formGroup]="supportForm">
+                            <div class="flex flex-wrap items-center -mx-2.5 space-y-3 lg:space-y-0">
+                                <div class="w-full lg:w-1/2 px-2.5">
+                                  <span class="block text-16 lg:text-18 font-normal text-secondary">{{"Your name" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+                                  <input class="w-full bg-white text-d5 font-medium mt-2 px-5 py-2.5 rounded-[10px] focus:outline-none focus:shadow-outline"
+                                    type="text" placeholder="Enter your name" formControlName="name">
+                                    <span class="error-message text-red_1 block text-sm font-semibold" *ngIf="supportForm.get('name').hasError('required') && (supportForm.get('name').dirty || supportForm.get('name').touched)">{{"Name is required." | translate}}</span>
+                                </div>
+                                <div class="w-full lg:w-1/2 px-2.5">
+                                  <span class="block text-16 lg:text-18 font-normal text-secondary">{{"Your email" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+                                  <input class="w-full bg-white text-d5 font-medium mt-2 px-5 py-2.5 rounded-[10px] focus:outline-none focus:shadow-outline"
+                                    type="text" placeholder="Enter your email" formControlName="email">  
+                                    <span class="error-message text-red_1 block text-sm font-semibold" *ngIf="supportForm.get('email').hasError('required') && (supportForm.get('email').dirty || supportForm.get('email').touched)">{{"Email is required." | translate}}</span>
+                                </div>
+                            </div>
+                            <div class="w-full">
+                              <span class="block text-16 lg:text-18 font-normal text-secondary">{{"Your Subject" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+                              <input class="w-full bg-white text-d5 font-medium mt-2 px-5 py-2.5 rounded-[10px] focus:outline-none focus:shadow-outline"
+                                type="text" placeholder="Enter your subject" formControlName="subject">
+                                <span class="error-message text-red_1 block text-sm font-semibold" *ngIf="supportForm.get('subject').hasError('required') && (supportForm.get('subject').dirty || supportForm.get('subject').touched)">{{"Subject is required." | translate}}</span>
+                            </div>
+                            <div class="w-full">
+                              <span class="block text-16 lg:text-18 font-normal text-secondary">{{"Your question or comment" | translate}}</span>
+                              <textarea
+                                class="w-full h-28 lg:h-32 xl:h-36 bg-white text-d5 font-medium mt-2 p-3 rounded-[10px] focus:outline-none focus:shadow-outline resize-none" placeholder="Write your question or comment" formControlName="comments"></textarea>
+                            </div>
+                            <div class="w-full">
+                              <div class="flex flex-wrap items-center relative order-2 sm:order-1">
+                                <div class="w-full lg:w-1/2 relative pr-0 lg:pr-3.5 pb-4 lg:pb-0">
+                                  <span id="SuccessMessage" class="success"></span>
+                                  <input [formControlName]="'captcha'" type="text" id="UserCaptchaCode"
+                                    class="block w-full outline-none text-base xl:text-lg bg-white border-2 border-transparent rounded-md shadow-one py-4 xl:py-6 px-6 xl:px-7 mr-3.5"
+                                    placeholder='Enter Captcha'>
+                                  <span
+                                    class="error-message text-red-500 block absolute bottom-0 md:bottom-2 left-0 text-sm font-semibold"
+                                    *ngIf="!supportForm.controls['captcha'].value && supportForm.controls['captcha'].hasError('required') && supportForm.controls['captcha'].touched">
+                                    {{"Please enter captcha." | translate}}</span>
+                                  <!-- <span id="WrongCaptchaError" class="error text-red-500"></span> -->
+                                </div>
+                                <div class="w-full lg:w-1/2 flex items-center  CaptchaWrap">
+                                  <div class="w-full pr-3.5 relative">
+                                    <img [src]="createdCaptchaUrl" class="w-full h-10">
+                                  </div>
+                                  <div class="ReloadBtn" (click)="reGenerateCaptcha()"></div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="w-full space-y-2 lg:space-y-4">
+                              <div class="flex items-center space-x-1">
+                                <span class="block text-16 md:text-18 lg:text-xl font-medium text-secondary">{{"Add Attachment: (optional)" | translate}}</span>
+                                <div class="relative group flex items-center cursor-pointer">
+                                  <span class="block icon-alert text-xl text-d4"></span>
+                                  <div class="group-hover:block hidden w-52 absolute left-6 top-0 bg-white text-[12px] text-secondary font-medium border border-d1 p-2.5 rounded-md">
+                                    <span class="block">JPEG,JPG, PNG, PDF, DOC, MP4</span>
+                                    <span class="block">{{"max upload size" | translate}} :- 16 mb</span>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="flex items-center space-x-2.5" for="choose-file">
+                                <div class="relative w-full max-w-32 bg-d2 p-1.5 px-5 outline-none border border-d1 border-dashed rounded-lg font-medium flex items-center justify-center space-x-2">
+                                  <span class="text-secondary cursor-pointer">{{"Choose file" | translate}}</span>
+                                  <input type="file" class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer" name="upload" id="upload" [multiple]="false" (change)="uploadItemImage($event)"/>
+                                </div>
+                                <span class="text-16 text-d4">{{fileName || 'No file choosen' | translate}}</span>
+                              </div>
+                            </div>
+                            <div class="w-full">
+                              <button
+                                class="block w-full lg:max-w-44 text-14 lg:text-16 xl:text-18 font-semibold tracking-wide bg-primary text-white border border-primary hover:bg-transparent hover:text-primary p-2.5 lg:p-5 rounded-lg focus:outline-none focus:shadow-outline anim" (click)="onSubmit()">
+                                {{"Submit Now" | translate}}
+                              </button>
+                            </div>
+                        </form>
+                    </div>
+                    <img src="./assets/images/get-in-touch-bg.webp" alt="Get In Touch" class="absolute inset-0 w-full h-full object-cover" />
+                </div>
+            </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

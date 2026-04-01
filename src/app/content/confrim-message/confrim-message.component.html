@@ -1,0 +1,132 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="relative wrapper text-center space-y-3.5 z-10">
+    <h1 class="h1">Confrim order detail</h1>
+    <div class="flex items-center justify-center space-x-2">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">Home</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <!-- <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/profile/order'" *ngIf="isOrderConfrim">Profile</span> -->
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="isOrderConfrim ? '/profile/order' : '/profile/subscription'">Profile</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">Confrim order detail</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20"
+    alt="bg-cover" />
+</section>
+<section *ngIf="isOrderConfrim">
+  <div class="wrapper py-12 lg:py-16 xl:py-24">
+    <div class="w-full shadow-three rounded-2xl py-7 lg:py-9 px-5 xl:py-12 xl:px-7">
+      <div class="flex items-center justify-center space-x-3">
+        <img src="./assets/images/success.webp" class="w-full max-w-14 sm:max-w-16 xl:max-w-20" alt="success" />
+        <div class="text-center">
+          <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">Order placed
+            successfully,</span>
+          <span class="font-extrabold text-primary text-xl lg:text-24 xl:text-3xl block">thank you!</span>
+        </div>
+      </div>
+      <span class="my-8 border-t border-d1 block"></span>
+      <div class="w-full rounded-2xl bg-d2 p-4">
+        <div class="flex flex-wrap items-center -mx-2.5 cursor-pointer">
+          <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+            <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+              <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product" />
+            </div>
+          </div>
+          <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+            <ul class="space-y-1">
+              <li class="flex items-center justify-between">
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Date</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{orderDetail?.data?.orderAtTimestamp |
+                  date:'dd/MM/yyyy'}}</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Id</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{orderDetail?.data?.orderId}}</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Status</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'pending'">Pending</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'ready_to_ship'">Rady To Ship</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'in_replace'">Replace in Progress</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'shipped'">Order Shipped</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'replaceaccept'">Replace Accept</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'rto'">Returned</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'cancelled'">Cancelled</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'replacerejected'">Replace Rejected</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                  *ngIf="orderDetail?.data?.fullfill_status === 'delivered'"> Delivered</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Quantity</span>
+                <span
+                  class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{orderDetail?.data?.total_quantity}}</span>
+              </li>
+              <li class="flex items-center justify-between">
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Total Amount</span>
+                <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{orderDetail?.data?.currency == 'INR' ? '₹ ' + orderDetail?.data?.total_pay : '$ ' + orderDetail?.data?.total_pay}}</span>
+              </li>
+              <!-- <li class="flex items-center justify-end">
+                <span class="block text-xs md:text-sm lg:text-base font-semibold text-primary underline cursor-pointer" (click)="cancelOrder($event, orderDetail)" *ngIf="orderDetail?.data?.fullfill_status == 'pending'">Cancel Order</span>
+              </li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+<section *ngIf="!isOrderConfrim">
+  <div class="wrapper py-12 lg:py-16 xl:py-24">
+    <div class="w-full shadow-three rounded-2xl py-7 lg:py-9 px-5 xl:py-12 xl:px-7">
+      <div class="flex items-center justify-center space-x-3">
+        <img src="./assets/images/success.webp" class="w-full max-w-14 sm:max-w-16 xl:max-w-20" alt="success" />
+        <div class="text-center">
+          <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">Plan buy successfully,</span>
+          <span class="font-extrabold text-primary text-xl lg:text-24 xl:text-3xl block">thank you!</span>
+        </div>
+      </div>
+      <span class="my-8 border-t border-d1 block"></span>        
+      <div class="flex flex-wrap items-center -mx-2.5">
+        <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+          <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+            <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+          </div>
+        </div>
+        <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="w-full sm:w-auto text-xs lg:text-sm font-medium" [ngClass]="orderDetail?.data?.planstatus == 'Active' ? 'text-[#11A75C]' : orderDetail?.data?.planstatus == 'Expired' ? 'text-[#FF3B30]' : orderDetail?.data?.planstatus == 'Cancelled' ? 'text-[#FF3B30]' : 'text-dark' ">{{orderDetail?.data?.planstatus == 'Active' ? 'Active' : orderDetail?.data?.planstatus == 'Expired' ? 'Expired' : orderDetail?.data?.planstatus == 'Cancelled' ? 'Cancelled' : ''}}</span>
+            <span class="w-full sm:w-auto text-xs lg:text-sm font-medium text-d4">{{orderDetail?.data?.orderid ? 'Order # ' + orderDetail?.data?.orderid : ''}}</span>
+          </div>
+          <h3 class="h3 relative">{{orderDetail?.data?.planid?.planname}}  <!-- <span class="inline-block icon-alert text-d5 h3 pl-2"></span>  --></h3>
+          <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+            <div class="w-full max-w-[310px]">
+              <ul class="space-y-1.5">
+                <li class="flex items-center justify-between">
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan:</span>
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{orderDetail?.data?.planid?.duration}}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Plan price:</span>
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{orderDetail?.data?.planid?.discounted_inr_amount ? '₹'  + orderDetail?.data?.planid?.discounted_inr_amount : '$' + orderDetail?.data?.planid?.discounted_usd_amount}}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">Expires On:</span>
+                  <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{orderDetail?.data?.delivery?.[orderDetail?.data?.delivery?.length - 1]?.deliverydate  | date:'MM-dd-yyyy'}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

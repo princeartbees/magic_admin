@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Magics Care</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="./assets/images/favIcon.webp">
+  <link rel="stylesheet" href="assets/css/icomoon.css">
+  <!-- //apple external login -->
+  <script type="text/javascript" src="assets/js/apple-client.js"></script>
+  <!-- //google external Login -->
+  <script src="assets/js/google-client.js" async defer></script>
+  <!-- //FB external Login -->
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '506822765454702', // Replace with your Facebook App ID
+        cookie: true,           // Enable cookies to allow the server to access the session
+        xfbml: true,           // Parse social plugins on this webpage
+        version: 'v13.0'         // Use this Graph API version
+      });
+
+      FB.AppEvents.logPageView(); // Log page views for analytics
+    };
+    // Load the SDK asynchronously
+    (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) { return; }
+      js = d.createElement(s); js.id = id;
+      js.src = "assets/js/fb-client.js";
+      fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+  </script>
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Google Tag Manager -->
+  <!-- <% if(window.location.pathname == '/' ) { %> 
+    <link rel="canonical" href="https://magicshaircare.com/" />
+  <% } %> -->
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || []; w[l].push({
+        'gtm.start':
+          new Date().getTime(), event: 'gtm.js'
+      }); var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+          'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+    })(window, document, 'script', 'dataLayer', 'GTM-524Z6TB3');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3Q4DVGBDKD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', 'G-3Q4DVGBDKD');
+  </script>
+
+  <!-- Meta Pixel Code -->
+  <script>
+    !function (f, b, e, v, n, t, s) {
+      if (f.fbq) return; n = f.fbq = function () {
+        n.callMethod ?
+        n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+      };
+      if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+      n.queue = []; t = b.createElement(e); t.async = !0;
+      t.src = v; s = b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t, s)
+    }(window, document, 'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '484595181055601');
+    fbq('track', 'PageView');
+  </script>
+
+  <!-- End Meta Pixel Code -->
+</head>
+
+<body class="mat-typography">
+  <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=484595181055601&ev=PageView&noscript=1" /></noscript>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-524Z6TB3" heigsht="0" width="0"
+      style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+  <app-root></app-root>
+  <script src="assets/js/script.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var lastScroll = 0;
+
+      window.addEventListener("scroll", function () {
+        setTimeout(function () {
+          //gives 100ms to finish scrolling before doing a check
+          var scroll = window.scrollY;
+          var selectorElements = document.querySelectorAll("header");
+
+          if (scroll > lastScroll) {
+            selectorElements.forEach(function (element) {
+              element.classList.add("-translate-y-full");
+            });
+          } else if (scroll < lastScroll) {
+            selectorElements.forEach(function (element) {
+              element.classList.remove("-translate-y-full");
+            });
+          }
+          lastScroll = scroll;
+        }, 100);
+      });
+    });
+  </script>
+  <script>
+    window.onscroll = function () {
+      var currentScrollPos = window.pageYOffset;
+      var navbar1 = document.getElementById("main_header2");
+      var navbar = document.getElementById("main_header");
+      var counter = document.getElementById("mob_counter");
+      
+
+      if (prevScrollpos > currentScrollPos) {
+        navbar1?.classList.remove("navbar_down");
+        navbar1?.classList.add("navbar_up");
+        navbar?.classList.remove("navbar_down");
+        navbar?.classList.add("navbar_up");
+        counter?.classList.remove("counter_down");
+        counter?.classList.add("counter_up");
+      } else {
+        navbar1?.classList.remove("navbar_up");
+        navbar1?.classList.add("navbar_down");
+        navbar?.classList.remove("navbar_up");
+        navbar?.classList.add("navbar_down");
+        counter?.classList.remove("counter_up");
+        counter?.classList.add("counter_down");
+      }
+      prevScrollpos = currentScrollPos;
+    }
+    if (window.innerWidth <= 450) {
+      var prevScrollpos = window.pageYOffset;
+    };
+  </script>
+  
+  <button class="max-w-11 lg:max-w-14 fixed top-2/3 -translate-y-1/2 right-2 z-50 animate-pulse" id="whatsappBtn" onclick="openWhatsApp()">
+    <img src="assets/images/whatsapp.webp" class="max-w-full" alt="whatsapp"/>
+  </button>
+  <!--Start of Tawk.to Script-->
+  <script type="text/javascript">
+    function openWhatsApp() {
+      window.open('https://api.whatsapp.com/send?phone=8160713636&text=Hello!%20I%20want%20to%20purchase%20Magics%20hair%20product.', '_blank');
+    }
+  </script>
+
+  <!-- <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/66fe6bb9256fb1049b1c54a9/1i98t9jdd';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script> -->
+  <!--End of Tawk.to Script-->
+</body>
+
+</html>

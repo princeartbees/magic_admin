@@ -1,0 +1,62 @@
+<div class="w-full">
+  <form method="post" class="w-full max-w-[500px] rounded-2xl bg-d2 px-6 xl:px-8 py-10 xl:py-12" [formGroup]="refundReplaceOrderForm">
+      <div class="flex items-center justify-between">
+          <span class="text-xl xl:text-24 text-secondary font-bold">{{"Refund & Replace Order" | translate}}</span>
+          <span class="icon-close text-14 cursor-pointer" (click)="onClose()"></span>
+      </div>
+      <div class="space-y-3 lg:space-y-5 my-6 lg:my-8">
+          <div class="space-y-2">
+              <span class="block xl_titel font-medium">{{"Reason" | translate}}</span>
+              <input class="w-full p-3 lg:p-4 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="What's Most Important To Know?" type="text" name="titel" id="titel" formControlName="reason">
+          </div>
+          <div class="space-y-2">
+              <span class="block xl_titel font-medium">{{"Message" | translate}}</span>
+              <textarea class="w-full h-20 md:h-24 lg:h-28 xl:h-36 p-3 lg:p-4 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base resize-none" placeholder="Enter your massage" name="description" id="description" rows="3" formControlName="massage"></textarea>
+          </div>
+          <div class="w-full flex flex-col">
+            <input type="file" id="other_image" class="hidden" [multiple]="true" [accept]="" (change)="upaloadFile($event)">
+            <div class="w-full border border-black/20 rounded-xl">
+              <label for="other_image"
+                class="h-[70px] flex items-center justify-center border border-black/20 rounded-xl outline-none px-4 lg:px-6 py-3 cursor-pointer -mx-[1px] mt-[-1px]">
+                <div>
+                  <span class="flex items-center justify-center text-xl rounded-full bg-gray_5">
+                    <i class="icon-upload-file text-d5 font-medium"></i>
+                    <span class="block text-d5 font-medium text-base cursor-pointer pl-3">{{"Upload File" | translate}}</span>
+                  </span>
+                </div>
+              </label>
+              <div class="flex items-center flex-wrap p-3.5">
+                <div class="p-2.5" *ngFor="let img of replaceImages;let i= index;">
+                  <div class="relative w-24 h-24 rounded-md overflow-hidden group">
+                    <div
+                      class="absolute inset-0 z-30 bg-black/40 hidden group-hover:flex items-center justify-center">
+                      <button mat-icon-button (click)="removeOtherImnages(i)">
+                        <span class="block icon-delete text-white text-xl"></span>
+                      </button>
+                    </div>
+                    <div class="w-full h-full" *ngIf="img.type == 'image'">
+                      <img [src]="img?.path" alt="item9" class="w-full h-full object-cover">
+                    </div>
+                    <div class="w-full h-full" *ngIf="img.type == 'video'">
+                      <video class="w-full h-[100%]" controls (error)="imageOnError($event)">
+                        <source [src]="img?.path" class="w-full h-full object-cover">
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full flex justify-center p-2.5" *ngIf="replaceImages.length == 0">
+                  <div class="max-w-8xl w-full shadow-xl shadow-slate-100 rounded-2xl p-3 mx-auto bg-gray_2/60">
+                    <strong class="block text-xl lg:text-2xl 2xl:text-2xl text-center">{{"No images found" | translate}}..!</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+      <div class="flex space-x-5">
+          <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5 bg-transparent text-primary hover:text-white hover:bg-primary" (click)="onClose()">{{"Cancel" | translate}} </button>
+          <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5" (click)="returnOrder()">{{"Return Order" | translate}}</button>
+      </div>
+  </form>
+</div>

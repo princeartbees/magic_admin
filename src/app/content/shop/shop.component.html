@@ -1,0 +1,263 @@
+<section
+  class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="wrapper text-center space-y-3.5">
+    <h1 class="h1">{{"Shop the Magics" | translate}}</h1>
+    <div class="relative flex items-center justify-center space-x-2 z-10">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">{{"Home" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Shop" | translate}}</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20"
+    alt="bg-cover" />
+</section>
+<!-- product with fillter  -->
+<section class="relative">
+  <div class="wrapper py-12 lg:py-16 xl:py-24">
+    <div class="flex flex-wrap -mx-3.5">
+      <div id="filter"
+        class="w-full lg:w-3/12 fixed inset-0 h-screen bg-white z-50 lg:z-0 lg:relative p-3.5 -translate-x-full lg:translate-x-0 anim">
+        <div class="flex justify-between items-center mb-5 lg:hidden">
+          <span class="text-xl font-bold text-secondary block lg:hidden">{{"Filter" | translate}}</span>
+          <span onclick="toggleActive('#filter','-translate-x-full');"
+            class="icon-close text-xl rounded-full border border-d2 text-secondary flex items-center justify-center lg:hidden cursor-pointer"></span>
+        </div>
+        <div class="space-y-3 lg:space-y-5 pb-5 lg:pb-9">
+          <span class="text-lg lg:text-xl xl:text-26 font-bold text-secondary">{{"Price" | translate}}</span>
+          <div class="relative">
+            <p-slider [(ngModel)]="rangeValues" (onChange)="priceChange($event)" (onSlideEnd)="priceChangeEnd($event)" [min]="minValue" [max]="maxValue" [range]="true" styleClass="max-w-full w-full object-cover" />
+          </div>
+          <div class="flex justify-between">
+            <span class="text-sm sm:text-base lg:text-lg text-secondary">{{rangeValues[0]}}</span>
+            <span class="text-sm sm:text-base lg:text-lg text-secondary">{{rangeValues[1]}}</span>
+          </div>
+        </div>
+        <div class="py-5 lg:py-9 space-y-5 lg:space-y-6 border-y-2 border-d1">
+          <span class="text-lg lg:text-xl xl:text-26 font-bold text-secondary">{{"Customer Rating" | translate}}</span>
+            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" (ngModelChange)="ratingChange($event)" [(ngModel)]="customerRating">
+              <mat-radio-button class="example-radio-button flex align-items-center space-x-0.5 text-base lg:text-lg text-d4 font-medium" *ngFor="let item of ratingSortBy; let i = index" [value]="item.value">
+                {{item?.key | translate}}
+                <span class="inline-block icon-star text-16 text-[#FFB800] ml-2" *ngIf="item?.value != 0"></span>
+                <!-- <span class="inline-block ml-2">Only</span> -->
+              </mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="py-5 lg:py-9 space-y-5 lg:space-y-6 border-y-2 border-d1">
+          <span class="text-lg lg:text-xl xl:text-26 font-bold text-secondary">{{"Sort By" | translate}}</span>
+          <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" (ngModelChange)="sortByproduct($event)" [(ngModel)]="sortByAction">
+            <mat-radio-button class="example-radio-button flex align-items-center" *ngFor="let item of sortBy; let i = index" [value]="item.value">
+              {{item?.key | translate}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="w-full lg:w-9/12 p-3.5 space-y-3.5 lg:space-y-5">
+        <div class="w-full flex flex-wrap items-center">
+          <span class="text-xl lg:text-24 xl:text-26 font-bold text-secondary mr-5 hidden sm:inline-block">{{"Products" | translate}}</span>
+          <div class="shop-filter max-w-40 lg:max-w-xs w-full sm:ml-auto">
+            <mat-form-field>
+              <mat-label>{{"Product Type" | translate}}</mat-label>
+              <mat-select [(ngModel)]="filteredProductKey" name="productFilter"
+                (ngModelChange)="filterProductType($event)">
+                <mat-option value="all">
+                  <span class="text-base font-medium text-dark">All</span>
+                </mat-option>
+                <mat-option value="best-seller">
+                  <span class="text-base font-medium text-dark">{{"Best Seller" | translate}}</span>
+                </mat-option>
+                <mat-option value="combo">
+                  <span class="text-base font-medium text-dark">{{"Combo" | translate}}</span>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <span class="icon-filter ml-auto sm:ml-0 border border-primary px-2.5 py-1 rounded-md text-xl font-bold text-white bg-primary hover:text-primary hover:bg-white block lg:hidden cursor-pointer ml-2.5 anim" onclick="toggleActive('#filter','-translate-x-full');"></span>
+        </div>
+        <div  *ngIf="!isLoading">
+          <div class="hidden sm:flex flex-wrap -mx-3.5" *ngIf="productList.length > 0">
+            <div class="w-full min-[500px]:w-1/2 lg:w-1/3 p-3.5 product-item" *ngFor="let item of productList; let i=index">
+              <div class="relative product group h-full anim" (click)="onClickProduct(item?._id,item?.search_tag)">
+                <div class="relative overflow-hidden pb-5 anim" (mouseover)="mouseHoverVideo(item,i)" (mouseout)="mouseOutVideo(item)">
+                  <div class="w-full h-full object-cover" *ngIf="hoverIndex != i" (mouseover)="mouseHoverVideo(item,i)" (mouseout)="mouseOutVideo(item)">
+                    <img
+                      [src]="item?.productId?.bannerImage ? constants.baseImageUrl + item?.productId?.bannerImage : constants.defaultImage"
+                      class="w-full h-full aspect-square object-cover anim product-image"
+                      [alt]="item?.productId?.product_name" />
+                  </div>
+                  <div class="w-full h-full object-contain" *ngIf="hoverIndex == i" (mouseover)="mouseHoverVideo(item,i)" (mouseout)="mouseOutVideo(item)" >
+                    <video #videoElement autoplay controls muted loop class="h-80 max-h-80 max-w-64 mx-auto">
+                      <source [src]="constants.baseImageUrl + hoverVideo" class="object-cover anim">
+                    </video>
+                  </div>
+                </div>
+                <div class="relative space-y-2.5">
+                  <div class="flex flex-wrap items-center">
+                    <div class="flex items-center space-x-1 mr-1.5" *ngIf="item?.ratingArray?.length > 0">
+                      <span  *ngFor="let subItem of item?.ratingArray">
+                        <span class="icon-star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="subItem?.ratting"></span>
+                        <span class="icon-unfill_star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="!subItem?.ratting && !subItem?.isBetween"></span>
+                        <span class="icon-half-ratting text-base xl:text-lg fotn-semibold text-ratting"*ngIf="subItem?.isBetween && !subItem?.ratting"></span>
+                      </span>
+                    </div>
+                    <span class="text-xs lg:text-sm text-secondary mr-1.5 pt-0.5">{{item?.averageRating |  number: '1.1-1'}}</span>
+                    <span class="text-xs lg:text-sm text-secondary whitespace-nowrap pt-0.5" *ngIf="item?.customerreview > 0">({{item?.customerreview}})</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-base lg:text-lg font-medium text-secondary line-clamp-2">{{item?.productId?.product_name | titlecase}}</span>
+                  </div>
+                  <div class="flex justify-between items-center" *ngIf="item?.productId?.iscombo">
+                    <div class="flex items-baseline space-x-1">
+                      <span class="text-lg lg:text-xl xl:text[22px] font-semibold text-primary">{{item?.perpcs_inr_grossamount? '₹'+item?.perpcs_inr_grossamount : '$'+item.perpcs_usd_grossamount}}<span class="text-sm lg:text-base">/ Pcs</span></span>
+                      <span class="text-xs lg:text-sm text-d4 block line-through">{{item?.perpcs_inr_price ? '₹'+item?.perpcs_inr_price : '$'+item.perpcs_usd_price}}</span>
+                      <span class="text-xs lg:text-sm text-secondary">({{item?.sizeId?.size_name}})</span>
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center" *ngIf="!item?.productId?.iscombo">
+                    <div class="flex items-baseline space-x-1">
+                      <span class="text-lg lg:text-xl xl:text[22px] font-semibold text-primary">{{item?.perpcs_inr_grossamount? '₹'+item?.perpcs_inr_grossamount : '$'+item.perpcs_usd_grossamount}}</span>
+                      <span class="text-xs lg:text-sm text-d4 block line-through">{{item?.perpcs_inr_price ? '₹'+item?.perpcs_inr_price : '$'+item.perpcs_usd_price}}</span>
+                      <span class="text-xs lg:text-sm text-secondary">({{item?.sizeId?.size_name}})</span>
+                    </div>
+                  </div>
+                  <div class="absolute left-1/2 -translate-x-1/2 -top-10 md:-translate-y-10 md:opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0 space-x-3 flex items-center anim">
+                    <span
+                      class="flex items-center justify-center w-10 h-10 rounded-full shadow-one anim" [ngClass]="item?.in_cart ? 'bg-primary text-white' : ' bg-white hover:bg-primary hover:text-white'" (click)="addEditCartList($event,item)" (mouseover)="mouseOutVideo(item)" (mouseout)="mouseOutVideo(item)">
+                      <span class="icon-unfill_cart text-[22px]"></span>
+                    </span>
+                    <span class="flex items-center justify-center w-10 h-10 rounded-full shadow-one anim" [ngClass]="item?.in_wishlist ? 'bg-primary text-white' : ' bg-white hover:bg-primary hover:text-white'" (click)="addEditWishlist($event,item)" (mouseover)="mouseOutVideo(item)" (mouseout)="mouseOutVideo(item)">
+                      <span class="icon-unfill_wishlist text-xl"></span>
+                    </span>
+                  </div>
+                  <button class="product_buy_btn" *ngIf="item?.stock > 0" (click)="buyNow(item)" (mouseover)="mouseOutVideo(item)" (mouseout)="mouseOutVideo(item)">{{"Buy Now" | translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="sm:hidden flex flex-wrap -mx-3.5" *ngIf="productList.length > 0">
+            <div class="w-full min-[500px]:w-1/2 lg:w-1/3 p-3.5 product-item" *ngFor="let item of productList; let i=index">
+              <div class="relative product group h-full anim" (click)="onClickProduct(item?._id,item?.search_tag)">
+                <div class="relative overflow-hidden pb-5 anim" >
+                  <div class="w-full h-full object-cover">
+                    <img
+                      [src]="item?.productId?.bannerImage ? constants.baseImageUrl + item?.productId?.bannerImage : constants.defaultImage"
+                      class="w-full h-full aspect-square object-cover anim product-image"
+                      [alt]="item?.productId?.product_name" />
+                  </div>
+                </div>
+                <div class="relative space-y-2.5">
+                  <div class="flex flex-wrap items-center">
+                    <div class="flex items-center space-x-1 mr-1.5" *ngIf="item?.ratingArray?.length > 0">
+                      <span  *ngFor="let subItem of item?.ratingArray">
+                        <span class="icon-star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="subItem?.ratting"></span>
+                        <span class="icon-unfill_star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="!subItem?.ratting && !subItem?.isBetween"></span>
+                        <span class="icon-half-ratting text-base xl:text-lg fotn-semibold text-ratting"*ngIf="subItem?.isBetween && !subItem?.ratting"></span>
+                      </span>
+                    </div>
+                    <span class="text-xs lg:text-sm text-secondary mr-1.5 pt-0.5">{{item?.averageRating |  number: '1.1-1'}}</span>
+                    <span class="text-xs lg:text-sm text-secondary whitespace-nowrap pt-0.5" *ngIf="item?.customerreview > 0">({{item?.customerreview}})</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-base lg:text-lg font-medium text-secondary line-clamp-2">{{item?.productId?.product_name | titlecase}}</span>
+                  </div>
+                  <div class="flex justify-between items-center" *ngIf="item?.productId?.iscombo">
+                    <div class="flex items-baseline space-x-1">
+                      <span class="text-lg lg:text-xl xl:text[22px] font-semibold text-primary">{{item?.perpcs_inr_grossamount? '₹'+item?.perpcs_inr_grossamount : '$'+item.perpcs_usd_grossamount}}<span class="text-sm lg:text-base">/ Pcs</span></span>
+                      <span class="text-xs lg:text-sm text-d4 block line-through">{{item?.perpcs_inr_price ? '₹'+item?.perpcs_inr_price : '$'+item.perpcs_usd_price}}</span>
+                      <span class="text-xs lg:text-sm text-secondary">({{item?.sizeId?.size_name}})</span>
+                    </div>
+                  </div>
+                  <div class="flex justify-between items-center" *ngIf="!item?.productId?.iscombo">
+                    <div class="flex items-baseline space-x-1">
+                      <span class="text-lg lg:text-xl xl:text[22px] font-semibold text-primary">{{item?.perpcs_inr_grossamount? '₹'+item?.perpcs_inr_grossamount : '$'+item.perpcs_usd_grossamount}}</span>
+                      <span class="text-xs lg:text-sm text-d4 block line-through">{{item?.perpcs_inr_price ? '₹'+item?.perpcs_inr_price : '$'+item.perpcs_usd_price}}</span>
+                      <span class="text-xs lg:text-sm text-secondary">({{item?.sizeId?.size_name}})</span>
+                    </div>
+                  </div>
+                  <div class="absolute left-1/2 -translate-x-1/2 -top-10 md:-translate-y-10 md:opacity-0 md:group-hover:opacity-100 md:group-hover:translate-y-0 space-x-3 flex items-center anim">
+                    <span
+                      class="flex items-center justify-center w-10 h-10 rounded-full shadow-one anim" [ngClass]="item?.in_cart ? 'bg-primary text-white' : ' bg-white hover:bg-primary hover:text-white'" (click)="addEditCartList($event,item)">
+                      <span class="icon-unfill_cart text-[22px]"></span>
+                    </span>
+                    <span class="flex items-center justify-center w-10 h-10 rounded-full shadow-one anim" [ngClass]="item?.in_wishlist ? 'bg-primary text-white' : ' bg-white hover:bg-primary hover:text-white'" (click)="addEditWishlist($event,item)">
+                      <span class="icon-unfill_wishlist text-xl"></span>
+                    </span>
+                  </div>
+                  <button class="product_buy_btn" *ngIf="item?.stock > 0" (click)="buyNow(item)">{{"Buy Now" | translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-wrap -mx-3.5" *ngIf="isLoading">
+          <div class="w-full min-[500px]:w-1/2 lg:w-1/3 p-3.5" *ngFor="let item of loadingProductArray">
+            <div class="relative">
+              <div >
+                <img [src]="constants.defaultProductImage" alt="item11"/>
+              </div>
+              <div class="absolute inset-0 w-full h-full flex items-center justify-center backdrop-blur-sm z-[39]">
+                <div class="loader p-2.5 rounded-full flex space-x-1.5">
+                  <div class="w-2.5 h-2.5 bg-primary rounded-full animate-bounce"></div>
+                  <div class="w-2.5 h-2.5 bg-primary rounded-full animate-bounce"></div>
+                  <div class="w-2.5 h-2.5 bg-primary rounded-full animate-bounce"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="productList.length == 0 && !isLoading">
+          <img src="./assets/images/no-filtered-data.webp" alt="Filter data not found" class="w-full h-full max-w-[480px] mx-auto">
+          <span class="block text-3xl font-medium text-d4 text-center">{{"Selected filters has no results." | translate}}</span>
+        </div>
+        <div class="w-full mt-5" *ngIf="totalProductCount > 10">
+          <p-paginator (onPageChange)="paginationPayload($event)" [first]="1" [rows]="limit" [totalRecords]="totalProductCount" [rowsPerPageOptions]="[10,20,50]" />
+          <!-- <mat-paginator [length]="totalProductCount" [pageSize]="limit" [pageSizeOptions]="[10,20,50]" (page)="paginationPayload($event)" aria-label="Select page"></mat-paginator> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenLoginForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-login [isUnknowUser]='isOpenLoginForm'  (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (isOpenRegisterFormPopup)="isOpenRegisterFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)"></app-login>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenRegisterForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenRegisterForm = !isOpenRegisterForm" *ngIf="isOpenRegisterForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-register [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenOtpVeryFicationForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenCreatePinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenCreatePinForm = !isOpenCreatePinForm" *ngIf="isOpenCreatePinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-create-reset-pin [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenForgetPinForm = !isOpenForgetPinForm" *ngIf="isOpenForgetPinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forget-pin [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)"></app-forget-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgotPinOtpVerifyForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-pin-otp-verify [isUnknowUser]='isOpenForgotPinOtpVerifyForm' (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"  
+    (unKnowUserForgotPinVeryFiedOtp)="unKnowUserForgotPinVeryFiedOtp($event)"></app-forgot-pin-otp-verify>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenResetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-reset-pin [isUnknowUser]='isOpenResetPinForm' (unKnowUseResetPin)="unKnowUseResetPin($event)"></app-forgot-reset-pin>
+  </div>
+</div>

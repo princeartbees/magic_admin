@@ -1,0 +1,170 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="relative wrapper text-center space-y-3.5 z-10">
+    <h1 class="h1">{{"Shopping Cart" | translate}}</h1>
+    <div class="flex items-center justify-center space-x-2">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">{{"Home" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Cart" | translate}}</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover"/>
+</section>
+<section>
+  <div class="wrapper py-12 lg:py-16 xl:py-24">
+    <div class="flex flex-wrap -mx-3.5">
+      <div class="p-3.5 space-y-9 xl:space-y-12" [ngClass]="cartList.length > 0 ? 'w-full md:w-7/12 lg:w-8/12' : 'w-full'">
+        <div class="space-y-5">
+          <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Shopping Cart" | translate}}</span>
+          <div  *ngIf="!isCartListLoading">
+            <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length > 0">
+              <div class="p-3 rounded-xl bg-d2 flex flex-wrap" *ngFor="let singleProduct of cartList">
+                <div class="w-full sm:w-1/2 md:w-4/12 lg:w-3/12 p-2.5">
+                  <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                    <img [src]="singleProduct?.productId?.bannerImage ? constants.baseImageUrl + singleProduct?.productId?.bannerImage : constants.defaultProductImage" class="max-w-36 w-full aspect-square" alt="product"/>
+                  </div>
+                </div>
+                <div class="w-full sm:w-1/2 md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                  <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">{{singleProduct?.productId?.product_name}}</span>
+                  <span class="xl_titel text-primary block">{{singleProduct?.inr_gross_amount ? '₹'  + singleProduct?.inr_gross_amount : '$' + singleProduct?.usd_gross_amount}}</span>
+                  <div class="flex flex-wrap items-center">
+                    <form class="max-w-20 relative lg:mr-5">
+                      <input type="number" readonly id="number-input" [value]="singleProduct?.quantity" aria-describedby="helper-text-explanation" class="bg-white border-2 border-primary text-secondary font-medium text-24 lg:text-3xl block w-full h-12 py-1 px-4 sm:pr-7 outline-none" placeholder="0"/>
+                      <div class="absolute inset-y-0 right-0 border-l-2 border-primary">
+                        <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer" (click)="increaseProductQuantity(singleProduct?.sizeId?._id,singleProduct)"> 
+                          <span class="inline-block icon-down-arrow text-[8px] text-secondary rotate-180"></span>
+                        </div>
+                        <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer border-t-2 border-primary" (click)="decreaseProductQuantity(singleProduct?.sizeId?._id,singleProduct)"> 
+                          <span class="inline-block icon-down-arrow text-[8px] text-secondary"></span>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="select-size mx-5 lg:ml-0 lg:mr-5" *ngIf="singleProduct?.sizeId?._id">
+                      <mat-form-field>
+                        <mat-label>Select Size</mat-label>
+                        <mat-select (ngModelChange)="changeSize($event,singleProduct)" [(ngModel)]="singleProduct?.sizeId._id" name="size">
+                          <mat-option [value]="item?.sizeId?._id" *ngFor="let item of singleProduct?.sizeDetails">
+                            <div class="flex items-center space-x-3.5">
+                              <span class="text-base font-medium text-dark">{{item?.sizeId?.size_name}}</span>
+                            </div>
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                    </div>
+                    <div class="mt-5 lg:mt-0" [ngClass]="isLogin? 'flex items-center space-x-3' : 'w-full lg:w-auto'">
+                      <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" (click)="addEditSaveForLatter(singleProduct)" *ngIf="isLogin">{{"Save for later" | translate}}</span>
+                      <span class="xl_titel text-primary text-xs lg:text-sm" *ngIf="isLogin">|</span>
+                      <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" (click)="removeProductFromCartList(singleProduct)">{{"Remove" | translate}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length == 0">
+              <div class="w-full bg-gray-200 rounded-lg p-5 md:p-7">
+                <span class="block text-base md:text-lg lg:text-xl font-semibold text-gray-600 text-center">{{"Your cart list is empty" | translate}}...!</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3 xl:space-y-5" *ngIf="isCartListLoading">
+            <div class="animate-pulse p-3 rounded-xl bg-d2 flex flex-wrap">
+              <div class="w-full sm:w-1/2  md:w-4/12 lg:w-3/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img [src]="constants?.defaultProductImage" class="max-w-36 w-full" alt="product"/>
+                </div>
+              </div>
+              <div class="w-full sm:w-1/2  md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                <!-- <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">XXXXXXXXXX XXXXXXX XXXXXXX</span>            
+                <p class="text-xs lg:text-sm text-d4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus voluptatum vero excepturi quisquam facilis iure, iusto optio, eaque maxime veritatis dignissimos rem, labore dolorum facere harum eveniet tempore dolor? Dicta.</p>
+                <span class="xl_titel text-primary block">₹XXX.XX</span> -->                
+                <span class="block max-w-md text-base lg:text-lg font-medium bg-gray-300 rounded-md mb-1">&nbsp;&nbsp;</span>
+                <p class="text-xs text-d4 bg-gray-300 rounded-md">&nbsp;&nbsp;</p>
+                <p class="text-xs text-d4 bg-gray-300 rounded-md">&nbsp;&nbsp;</p>
+                <p class="text-xs text-d4 bg-gray-300 rounded-md">&nbsp;&nbsp;</p>
+                <span class="xl_titel text-primary block">₹XXX.XX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-5" *ngIf="isLogin">
+          <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Save for later" | translate}}</span>
+          <div  *ngIf="!isSaveforLatterLoading">
+            <div class="space-y-3 xl:space-y-5" *ngIf="saveForLatterList?.length > 0">
+              <div class="p-3 rounded-xl bg-d2 flex flex-wrap" *ngFor="let singleProduct of saveForLatterList">
+                <div class="w-full sm:w-1/2 md:w-4/12 lg:w-3/12 p-2.5">
+                  <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                    <img [src]="singleProduct?.productId?.bannerImage ? constants.baseImageUrl + singleProduct?.productId?.bannerImage : constants.defaultProductImage" class="max-w-36 w-full aspect-square" alt="product"/>
+                  </div>
+                </div>
+                <div class="w-full sm:w-1/2 md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                  <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">{{singleProduct?.productId?.product_name}}</span>
+                  <span class="xl_titel text-primary block">{{singleProduct?.inr_gross_amount ? '₹'  + singleProduct?.inr_gross_amount : '$' + singleProduct?.usd_gross_amount}}</span>
+                  <div class="flex flex-wrap items-center space-x-5">
+                    <form class="relative max-w-12">
+                      <input type="number" readonly id="number-input" [value]="singleProduct?.quantity" aria-describedby="helper-text-explanation" class="bg-white text-secondary font-medium text-18 lg:text-[22px] block w-full py-1.5 px-3 outline-none text-center rounded-md border border-primary/70" placeholder="0"/>
+                      <div class="absolute inset-y-0">
+                        <!-- <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer" (click)="increaseProductQuantity(singleProduct?.sizeId?._id,singleProduct)"> 
+                          <span class="inline-block icon-down-arrow text-[8px] text-secondary rotate-180"></span>
+                        </div>
+                        <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer border-t-2 border-primary" (click)="decreaseProductQuantity(singleProduct?.sizeId?._id,singleProduct)"> 
+                          <span class="inline-block icon-down-arrow text-[8px] text-secondary"></span>
+                        </div> -->
+                      </div>
+                    </form>
+                    <div class="flex items-center space-x-3">
+                      <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" (click)="saveForLatterToAddCart(singleProduct)">{{"Move to cart" | translate}}</span>
+                      <span class="xl_titel text-primary text-xs lg:text-sm">|</span>
+                      <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" (click)="addEditSaveForLatter(singleProduct)">{{"Remove" | translate}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-3 xl:space-y-5" *ngIf="saveForLatterList?.length == 0">
+              <div class="w-full bg-gray-200 rounded-lg p-5 md:p-7">
+                <span class="block text-base md:text-lg lg:text-xl font-semibold text-gray-600 text-center">{{"Your saved later list is empty" | translate}}...!</span>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3 xl:space-y-5" *ngIf="isSaveforLatterLoading">
+            <div class="animate-pulse p-3 rounded-xl bg-d2 flex flex-wrap">
+              <div class="w-full sm:w-1/2  md:w-4/12 lg:w-3/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img [src]="constants?.defaultProductImage" class="max-w-36 w-full" alt="product"/>
+                </div>
+              </div>
+              <div class="w-full sm:w-1/2  md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary"></span>            
+                <p class="text-xs lg:text-sm text-d4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus voluptatum vero excepturi quisquam facilis iure, iusto optio, eaque maxime veritatis dignissimos rem, labore dolorum facere harum eveniet tempore dolor? Dicta.</p>
+                <span class="xl_titel text-primary block">₹XXX.XX</span>
+              </div>
+            </div>
+          </div>
+        </div>        
+      </div>
+      <div class="p-3.5 space-y-5" [ngClass]="cartList.length > 0 ? 'w-full md:w-5/12 lg:w-4/12' : 'hidden'">
+        <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Price Details" | translate}}</span>
+        <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three">
+          <ul class="flex flex-wrap justify-between">
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4">{{priceDetailsObj?.noOfItem}} {{"Items" | translate}} ({{priceDetailsObj?.noOfSubItem}}):</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency == 'inr' ? '₹ ' + priceDetailsObj.subTotal : '$' + priceDetailsObj.subTotal }}</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">{{"Shipping Charge" | translate}}:</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">{{"Free" | translate}}</li>
+            <!-- <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5" *ngIf="isFreeShipping">{{"Shipping Charge" | translate}}:</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right" *ngIf="isFreeShipping">{{"Free" | translate}}</li> -->
+            <!-- <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5" *ngIf="!isFreeShipping">{{"Shipping Charge" | translate}}:</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right" *ngIf="!isFreeShipping">₹ {{constants?.isShippingCharge || 0}}</li> -->
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">{{"Total" | translate}}:</li>
+            <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">{{priceDetailsObj?.currency == 'inr' ? '₹':'$' }} {{priceDetailsObj.totalAmount}}</li>
+          </ul>
+          <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+          <div class="flex justify-between">
+            <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{"Total Payable" | translate}}</span>
+            <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{priceDetailsObj?.currency == 'inr' ? '₹':'$' }} {{priceDetailsObj.totalAmount}}</span>
+          </div>
+          <button class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6" (click)="placeOrder()">{{"Place Order" | translate}}</button>
+          <span class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">{{"Delivery will take upto 5-7 business days" | translate}}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

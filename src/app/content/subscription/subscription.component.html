@@ -1,0 +1,328 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="relative wrapper text-center space-y-3.5 z-10">
+    <h1 class="h1">{{"Commit to Healthy Hair" | translate}}: <br class="hidden sm:block" />{{"Explore Our Plans" | translate}}</h1>
+    <div class="flex items-center justify-center space-x-2">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">{{"Home" | translate}}</span>
+     <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Plans" | translate}}</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover"/>
+</section>
+<section>
+  <mat-stepper [linear]="true" #stepper="matHorizontalStepper">
+    <mat-step>
+      <div class="wrapper max-w-[1400px] py-12 lg:py-16 xl:py-24 relative space-y-8 lg:space-y-10 xl:space-y-12" *ngIf="!isLoading">
+        <div class="flex justify-center flex-wrap -mx-3.5 plan">
+          <div class="w-full md:w-1/2 lg:w-1/3 p-3.5 plan_continer" *ngFor="let item of planList">
+            <div class="rounded-lg lg:rounded-3xl border border-l1 h-full overflow-hidden border_plan">
+              <div class="text-center py-3 px-2 bg-primary hidden most_pop">
+                <span class="uppercase text-18 text-white font-bold">{{"Recommended" | translate}}</span>
+              </div>
+              <div class="p-6 ">
+                <div class="space-y-2 xl:space-y-3">
+                  <!-- <img [src]="item?.productid?.bannerImage ?  constants.baseImageUrl + item.productid.bannerImage : constants?.defaultProductImage" class="max-w-[350px] w-full max-h-[232px] object-cover md:mx-auto" alt="three_pack.webp"/> -->
+                  <span class="block text-xl xl:text-[22px] text-secondary font-bold">{{item?.planname}}</span>
+                  <span class="text-primary text-sm lg:text-16 block">{{item?.description}}</span>
+                </div>
+                <div class="space-y-3">
+                  <div class="space-y-2 my-3">
+                    <span class="text-xl lg:text-24 xl:text-[28px] font-semibold">{{formatDuration(item?.duration)}}</span>
+                    <span class="h2 text-secondary block">{{item?.discounted_inr_amount ? '₹'  + item?.discounted_inr_amount : '$' + item.discounted_usd_amount}}
+                        <span class="text-d4 font-medium text-lg xl:text-lg inline-block ml-1 line-through">{{item.inr_price ? '₹ '+ item.inr_price : '$ '+item.usd_price}}
+                          <span class="text-red-600 font-medium text-xs xl:text-sm inline-block ml-1" *ngIf="item?.discount_inr_per > 0">{{item?.discount_inr_per}}% Off</span>
+                          <span class="text-red-600 font-medium text-xs xl:text-sm inline-block ml-1" *ngIf="item?.discount_usd_per > 0">{{item?.discount_usd_per}}% Off</span>
+                        </span>
+                    </span>
+                    
+                  </div>
+                  <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-full py-2.5" (click)="placeOrder(stepper,item)">{{"Buy Now" | translate}}</button>
+                  <span class="text-sm lg:text-base xl:text-lg font-normal text-d4 block">{{"Receive your pouches promptly after purchase." | translate}}</span>
+                  <span class="text-base xl:text-lg block font-semibold text-secondary">{{"Quantity" | translate}}: {{item?.quantity}}</span>
+                  <span class="text-gray-600 text-sm lg:text-base xl:text-lg block">{{"No of Delivery" | translate}}: {{item?.delivery_number}}</span>
+                </div>
+                <ul class="space-y-2 md:space-y-3 mt-3">
+                  <li class="space-x-2 md:space-x-4 flex items-center" *ngFor="let subItem of item?.planbenefits">
+                    <img class="w-5 h-5 md:w-6 md:h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                    <span class="xl_titel font-normal">{{subItem?.benefits}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper max-w-[1400px] py-12 lg:py-16 xl:py-24 relative space-y-8 lg:space-y-10 xl:space-y-12" *ngIf="isLoading">
+        <div class="animate-pulse flex flex-wrap rounded-lg lg:rounded-3xl xl:rounded-[50px] border border-l1 p-3.5">
+          <div class="w-full md:w-1/2 xl:7/12 p-3 md:p-5 pb-0 md:pb-5">
+            <div class="md:text-center mx-auto space-y-2 xl:space-y-4">
+              <img [src]="constants?.defaultProductImage" class="max-w-[350px] w-full max-h-[232px] object-cover md:mx-auto" alt="three_pack.webp"/>
+              <span class="block w-full max-w-md rounded-lg text-xl text-secondary font-bold bg-gray-200 mx-auto">&nbsp;&nbsp;</span>
+              <span class="block w-full max-w-xs rounded-lg text-sm bg-gray-200 font-normal mx-auto">&nbsp;&nbsp;</span>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 xl:5/12 p-3 md:p-5 pt-3 md:pt-5 space-y-4 lg:space-y-6 xl:space-y-8">
+            <div class="space-y-2">
+              <span class="h2 text-secondary block">₹ XXXX</span>
+              <span class="block w-full max-w-md rounded-lg text-sm lg:text-base xl:text-lg font-normal bg-gray-200">&nbsp;&nbsp;</span>
+            </div>
+            <ul class="space-y-3">
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+            </ul>
+            <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim max-w-44 w-full py-3 xl:py-3.5">Buy Now</button>
+          </div>
+        </div>
+        <div class="animate-pulse flex flex-wrap rounded-lg lg:rounded-3xl xl:rounded-[50px] border border-l1 p-3.5">
+          <div class="w-full md:w-1/2 xl:7/12 p-3 md:p-5 pb-0 md:pb-5">
+            <div class="md:text-center mx-auto space-y-2 xl:space-y-4">
+              <img [src]="constants?.defaultProductImage" class="max-w-[350px] w-full max-h-[232px] object-cover md:mx-auto" alt="three_pack.webp"/>
+              <span class="block w-full max-w-md rounded-lg text-xl text-secondary font-bold bg-gray-200 mx-auto">&nbsp;&nbsp;</span>
+              <span class="block w-full max-w-xs rounded-lg text-sm bg-gray-200 font-normal mx-auto">&nbsp;&nbsp;</span>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 xl:5/12 p-3 md:p-5 pt-3 md:pt-5 space-y-4 lg:space-y-6 xl:space-y-8">
+            <div class="space-y-2">
+              <span class="h2 text-secondary block">₹ XXXX</span>
+              <span class="block w-full max-w-md rounded-lg text-sm lg:text-base xl:text-lg font-normal bg-gray-200">&nbsp;&nbsp;</span>
+            </div>
+            <ul class="space-y-3">
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+            </ul>
+            <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim max-w-44 w-full py-3 xl:py-3.5">Buy Now</button>
+          </div>
+        </div>
+        <div class="animate-pulse flex flex-wrap rounded-lg lg:rounded-3xl xl:rounded-[50px] border border-l1 p-3.5">
+          <div class="w-full md:w-1/2 xl:7/12 p-3 md:p-5 pb-0 md:pb-5">
+            <div class="md:text-center mx-auto space-y-2 xl:space-y-4">
+              <img [src]="constants?.defaultProductImage" class="max-w-[350px] w-full max-h-[232px] object-cover md:mx-auto" alt="three_pack.webp"/>
+              <span class="block w-full max-w-md rounded-lg text-xl text-secondary font-bold bg-gray-200 mx-auto">&nbsp;&nbsp;</span>
+              <span class="block w-full max-w-xs rounded-lg text-sm bg-gray-200 font-normal mx-auto">&nbsp;&nbsp;</span>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 xl:5/12 p-3 md:p-5 pt-3 md:pt-5 space-y-4 lg:space-y-6 xl:space-y-8">
+            <div class="space-y-2">
+              <span class="h2 text-secondary block">₹ XXXX</span>
+              <span class="block w-full max-w-md rounded-lg text-sm lg:text-base xl:text-lg font-normal bg-gray-200">&nbsp;&nbsp;</span>
+            </div>
+            <ul class="space-y-3">
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+              <li class="space-x-4 flex items-center">
+                <img class="w-6 h-6" src="./assets/images/service_check.webp" alt="service_check"/>
+                <span class="block w-full max-w-xs rounded-lg text-sm lg:text-base bg-gray-200 font-normal">&nbsp;&nbsp;</span>
+              </li>
+            </ul>
+            <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim max-w-44 w-full py-3 xl:py-3.5">Buy Now</button>
+          </div>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step>
+      <div class="wrapper max-w-[1400px] py-12 lg:py-16 xl:py-24 relative space-y-8 lg:space-y-10 xl:space-y-12">
+        <span class="block text-2xl font-semibold text-primary underline decoration-primary cursor-pointer text-end" (click)="cancelPlanBuy(stepper)">{{"Back" | translate}}</span>
+        <div class="space-y-3.5 lg:space-y-5">
+          <div class="flex space-x-4 xl:space-x-5">
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">1.</span>
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Delivery address" | translate}}</span>
+          </div>
+          <!-- change address -->
+          <div class="address p-3 lg:p-5 rounded-md space-y-4 bg-d2">
+            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group space-y-4" (change)="selectAddressChange($event)">
+              <mat-radio-button class="example-radio-button flex align-items-center rounded-md cursor-pointer bg-white p-3 px-5" *ngFor="let item of addressDetails;let i = index;" [checked]="item.select" [value]="item._id">
+                {{item?.building}} , {{item?.sector}} , {{item?.city}} , {{item?.state}} , {{item?.pincode}}
+                <span class="text-sm xl:text-base font-medium text-primary underline cursor-pointer ml-auto pl-3" (click)="editAddress(item,$event)">{{"Edit" | translate}}</span>
+              </mat-radio-button>
+            </mat-radio-group>
+            <div class="flex items-center justify-between space-x-3">
+              <div class="space-x-1 flex items-center cursor-pointer" *ngIf="!isAddEditAddress">
+                <span class="inline-block icon-pluse text-14 text-primary"></span>
+                <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center" (click)="isAddEditAddress = true">{{"Add a new address" | translate}}</span>
+              </div>
+              <div class="space-x-1 flex items-center cursor-pointer" *ngIf="isAddEditAddress">
+                <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center" (click)="isAddEditAddress = false">{{"Cancel address" | translate}}</span>
+              </div>
+            </div>
+          </div>
+          <!-- address change/add form  -->
+          <div class="mt-5" *ngIf="!isAddEditAddressLoading && isAddEditAddress">
+            <app-add-edit-address [addressObj]="selectedAddress" (saveAndAddEditAddress)="addressAddEdit($event)"></app-add-edit-address>
+          </div>
+          <div class="relative mt-5" *ngIf="isAddEditAddressLoading && !isAddEditAddress">
+            <div class="w-full bg-gray-200 animatie-pulse text-xl font-semibold text-dark text-center p-10">{{'please wait' | titlecase}}</div>
+          </div>
+        </div>
+        <div class="space-y-3.5 lg:space-y-5">
+          <div class="flex space-x-4 xl:space-x-5">
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">2.</span>
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Plan details" | translate}}</span>
+          </div>
+          <div  *ngIf="!isSinglePalnLoading">
+            <div class="p-3 rounded-xl bg-d2 flex flex-wrap">
+              <div class="w-full sm:w-1/2 md:w-4/12 lg:w-3/12 flex items-center justify-center p-2.5">
+                <div class="w-full space-y-2 xl:space-y-4">
+                  <img [src]="getOnePlan?.plan_image ?  constants.baseImageUrl + getOnePlan?.plan_image : constants?.defaultProductImage" class="max-w-[350px] w-full max-h-[232px] object-cover md:mx-auto" alt="three_pack.webp"/>
+                </div>
+              </div>
+              <div class="w-full sm:w-1/2 md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">{{getOnePlan?.planname}}</span>
+                <p class="text-xs lg:text-sm text-d4">{{getOnePlan?.description}}</p>
+                <span class="text-18 lg:text-20 xl:text-24 font-medium text-dark block">{{getOnePlan?.discounted_inr_amount ? '₹'  + getOnePlan?.discounted_inr_amount : '$' + getOnePlan?.discounted_usd_amount}} / <span class="text-xs lg:text-base">{{getOnePlan?.duration | titlecase}}</span></span>
+                <span class="text-gray-600 text-sm lg:text-base block">{{"Quantity" | translate}}: {{getOnePlan?.quantity}}</span>
+                <span class="text-gray-600 text-sm lg:text-base block">{{"No of Delivery" | translate}}: {{getOnePlan?.delivery_number}}</span>
+                <ul class="space-y-3">
+                  <li class="space-x-4 flex items-center" *ngFor="let subItem of getOnePlan?.planbenefits">
+                    <img class="w-4 h-4" src="./assets/images/service_check.webp" alt="service_check"/>
+                    <span class="text-xs lg:text-sm font-normal">{{subItem?.benefits}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="space-y-3 xl:space-y-5" *ngIf="isSinglePalnLoading">
+            <div class="animate-pulse p-3 rounded-xl bg-d2 flex flex-wrap">
+              <div class="w-full sm:w-1/2  md:w-4/12 lg:w-3/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img [src]="constants?.defaultProductImage" class="max-w-36 w-full" alt="product"/>
+                </div>
+              </div>
+              <div class="w-full sm:w-1/2  md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">XXXXXXXXXX XXXXXXX XXXXXXX</span>            
+                <p class="text-xs lg:text-sm text-d4">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus voluptatum vero excepturi quisquam facilis iure, iusto optio, eaque maxime veritatis dignissimos rem, labore dolorum facere harum eveniet tempore dolor? Dicta.</p>
+                <span class="xl_titel text-primary block">₹XXX.XX</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="space-y-3.5 lg:space-y-5">
+          <div class="flex space-x-4 xl:space-x-5">
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">3.</span>
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Place order" | translate}}</span>
+          </div>
+          <div >
+            <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim max-w-44 w-full py-3 xl:py-3.5" (click)="createPayment(stepper,getOnePlan)">{{"Buy Now" | translate}}</button>
+          </div>
+        </div>
+      </div>
+    </mat-step>    
+    <mat-step>
+      <section>
+        <div class="wrapper py-12 lg:py-16 xl:py-24">
+          <div class="w-full shadow-three rounded-2xl py-7 lg:py-9 px-5 xl:py-12 xl:px-7">
+            <div class="flex items-center justify-center space-x-3">
+              <img src="./assets/images/success.webp" class="w-full max-w-14 sm:max-w-16 xl:max-w-20" alt="success" />
+              <div class="text-center">
+                <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">{{"Plan buy successfully" | translate}},</span>
+                <span class="font-extrabold text-primary text-xl lg:text-24 xl:text-3xl block">{{"Thank You" | translate}}!</span>
+              </div>
+            </div>
+            <span class="my-8 border-t border-d1 block"></span>        
+            <div class="flex flex-wrap items-center -mx-2.5">
+              <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product"/>
+                </div>
+              </div>
+              <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+                <div class="flex items-center justify-between">
+                  <span class="w-full sm:w-auto text-xs lg:text-sm font-medium" [ngClass]="placedOrderDataForPlan?.planstatus == 'Active' ? 'text-[#11A75C]' : placedOrderDataForPlan?.planstatus == 'Expired' ? 'text-[#FF3B30]' : placedOrderDataForPlan?.planstatus == 'Cancelled' ? 'text-[#FF3B30]' : 'text-dark' ">{{placedOrderDataForPlan?.planstatus == 'Active' ? 'Active' : placedOrderDataForPlan?.planstatus == 'Expired' ? 'Expired' : placedOrderDataForPlan?.planstatus == 'Cancelled' ? 'Cancelled' : 'Cancelled'}}</span>
+                  <span class="w-full sm:w-auto text-xs lg:text-sm font-medium text-d4">Order # {{placedOrderDataForPlan?.orderid}}</span>
+                </div>
+                <h3 class="h3 relative">{{placedOrderDataForPlan?.planid?.planname}}  <!-- <span class="inline-block icon-alert text-d5 h3 pl-2"></span>  --></h3>
+                <div class="sm:flex items-end flex-wrap sm:flex-nowrap sm:justify-between space-y-2 sm:space-y-0">
+                  <div class="w-full max-w-[310px]">
+                    <ul class="space-y-1.5">
+                      <li class="flex items-center justify-between">
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Plan" | translate}}:</span>
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{placedOrderDataForPlan?.planid?.duration}}</span>
+                      </li>
+                      <li class="flex items-center justify-between">
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Plan Price" | translate}}:</span>
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{placedOrderDataForPlan?.planid?.discounted_inr_amount ? '₹'  + placedOrderDataForPlan?.planid?.discounted_inr_amount : '$' + placedOrderDataForPlan?.planid?.discounted_usd_amount}}</span>
+                      </li>
+                      <li class="flex items-center justify-between">
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-d4">{{"Expires On" | translate}}:</span>
+                        <span class="text-xs lg:text-sm font-medium p-0.5 text-secondary">{{placedOrderDataForPlan?.delivery?.[placedOrderDataForPlan?.delivery?.length - 1]?.deliverydate  | date:'MM-dd-yyyy'}}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </mat-step>
+  </mat-stepper>  
+</section>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenLoginForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-login [isUnknowUser]='isOpenLoginForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (isOpenRegisterFormPopup)="isOpenRegisterFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)"></app-login>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenRegisterForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenRegisterForm = !isOpenRegisterForm" *ngIf="isOpenRegisterForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-register [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenOtpVeryFicationForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenCreatePinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenCreatePinForm = !isOpenCreatePinForm" *ngIf="isOpenCreatePinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-create-reset-pin [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenForgetPinForm = !isOpenForgetPinForm" *ngIf="isOpenForgetPinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forget-pin [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)"></app-forget-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgotPinOtpVerifyForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-pin-otp-verify [isUnknowUser]='isOpenForgotPinOtpVerifyForm' (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"  
+    (unKnowUserForgotPinVeryFiedOtp)="unKnowUserForgotPinVeryFiedOtp($event)"></app-forgot-pin-otp-verify>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenResetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-reset-pin [isUnknowUser]='isOpenResetPinForm' (unKnowUseResetPin)="unKnowUseResetPin($event)"></app-forgot-reset-pin>
+  </div>
+</div>

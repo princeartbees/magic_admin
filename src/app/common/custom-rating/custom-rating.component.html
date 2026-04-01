@@ -1,0 +1,22 @@
+<div class="rating">
+  <span *ngFor="let item of ratingArray">
+    <svg class="fas fa-star" width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0L14.6942 8.2918H23.4127L16.3593 13.4164L19.0534 21.7082L12 16.5836L4.94658 21.7082L7.64074 13.4164L0.587322 8.2918H9.30583L12 0Z" fill="#FFB800"/>
+    </svg>
+  </span>
+  <!-- <svg *ngIf="isBetweenRating" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
+    <polygon fill="#FFCA28" points="25,37.1 25,4 18.5,17.1 4,19.2 14.5,29.5 12,43.9 "/>
+  </svg> -->
+  <!-- <span class="rating-value">{{ ratingValue | number: '.1-1' }}</span> -->
+  <svg *ngIf="isBetweenRating" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+  viewBox="0 0 24 24" style="enable-background:new 0 0 24 24;" xml:space="preserve">
+<style type="text/css">
+ .st0{fill:#FFB800;}
+</style>
+<path class="st0" d="M23.9,9.2c-0.2-0.5-0.6-0.8-1.1-0.9l-6.9-0.6l-2.7-6.4C13,0.8,12.5,0.5,12,0.5s-1,0.3-1.2,0.8L8.1,7.7L1.2,8.3
+ c-0.3,0-0.5,0.1-0.7,0.3C0.3,8.8,0.1,9,0.1,9.2C0,9.4,0,9.7,0,9.9c0,0,0,0,0,0c0.1,0.2,0.2,0.4,0.4,0.6l5.2,4.6L4.1,22
+ c-0.1,0.2,0,0.5,0,0.7c0.1,0.2,0.2,0.4,0.4,0.6c0.2,0.2,0.5,0.2,0.8,0.2c0.2,0,0.5-0.1,0.7-0.2l6-3.6l6,3.6c0.4,0.3,1,0.2,1.4-0.1
+ c0.4-0.3,0.6-0.8,0.5-1.3l-1.5-6.8l5.2-4.6C24,10.2,24.1,9.7,23.9,9.2z M17.2,14.1c-0.2,0.1-0.3,0.3-0.4,0.6c-0.1,0.2-0.1,0.5,0,0.7
+ l1.5,6.4l-5.6-3.4c-0.2-0.1-0.4-0.2-0.7-0.2V2.4l2.6,6c0.1,0.2,0.2,0.4,0.4,0.5c0.2,0.1,0.4,0.2,0.6,0.2l6.5,0.6L17.2,14.1z"/>
+</svg>
+</div>

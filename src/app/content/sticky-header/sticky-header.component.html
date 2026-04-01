@@ -1,0 +1,90 @@
+<div class="fixed bottom-0 left-0 right-0 w-full bg-white shadow-[0px_-2px_19.9px-0px_#0F172A1F] px-2 py-1 z-50 anim duration-500" id="main_header2">
+  <div class="w-full relative flex items-center justify-between">
+    <ul class="flex space-x-2">
+      <li class="p-4 px-2.5">
+        <div class="relative sticky-link cursor-pointer px-2" [routerLink]="'/cartlist'" routerLinkActive="sticky_link">
+          <span class="count-product text-[10px] bg-primary text-white font-medium w-4 h-4 flex items-center justify-center rounded-full absolute -top-1 right-1" 
+            *ngIf="cartListCount > 0">{{cartListCount ? cartListCount : 0}}</span>
+          <span class="icon_show block icon-unfill_cart text-[24px] font-medium text-d5"></span>
+          <span class="icon_hide hidden icon-fill_cart text-[24px] font-medium text-primary"></span>
+        </div>
+      </li>
+      <li class="p-4 px-2.5">
+        <div class="sticky-link cursor-pointer px-2" [routerLink]="'/wishlist'" routerLinkActive="sticky_link">
+          <span class="icon_show icon-unfill_wishlist text-[24px] text-d5"></span>
+          <span class="icon_hide icon-fill_wishlist text-[24px] text-primary"></span>
+        </div>
+      </li>
+    </ul>
+    <div class="absolute left-1/2 -translate-x-1/2 top-0 -translate-y-1/2 w-[72px] h-[72px] rounded-full bg-white p-2">
+      <div class="w-full h-full flex items-center justify-center bg-primary rounded-full">
+        <div class="sticky-link cursor-pointer px-2" (click)="getSingleVariant()"> <!-- [routerLink]="'/'"  routerLinkActive="sticky_link" [routerLinkActiveOptions]="{ exact: true }" -->
+          <!-- <span class="inline-block">
+            <img src="./asstes/images/home.svg" alt="home" />
+          </span> -->
+          <!-- <span class="icon_show icon-unfill_home text-[24px] text-primary"></span>
+          <span class="icon_hide icon-fill_home text-[24px] text-primary"></span> -->
+          <img src="./assets/images/Magic.svg" alt="magic_packet" class="w-8"/>
+        </div>
+      </div>
+    </div>
+    <ul class="flex space-x-2">
+      <li class="p-4 px-2.5">
+        <div class="sticky-link cursor-pointer px-2" (click)="getProfileOrder()" routerLinkActive="sticky_link">
+          <span class="icon_show icon-unfill_order text-[24px] font-medium text-d5"></span>
+          <span class="icon_hide icon-fill_order text-[24px] font-medium text-primary"></span>
+        </div>
+      </li>
+      <li class="p-4 px-2.5">
+        <div class="sticky-link cursor-pointer px-2" (click)="getProfile()" routerLinkActive="sticky_link">
+          <span class="icon_show icon-unfill_user text-[24px] font-medium text-d5"></span>
+          <span class="icon_hide icon-fill_user text-[24px] font-medium text-profile"></span>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenLoginForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-login [isUnknowUser]='isOpenLoginForm'  (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (isOpenRegisterFormPopup)="isOpenRegisterFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)"></app-login>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenRegisterForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenRegisterForm = !isOpenRegisterForm" *ngIf="isOpenRegisterForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-register [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenOtpVeryFicationForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenCreatePinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenCreatePinForm = !isOpenCreatePinForm" *ngIf="isOpenCreatePinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-create-reset-pin [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenForgetPinForm = !isOpenForgetPinForm" *ngIf="isOpenForgetPinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forget-pin [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)"></app-forget-pin>
+  </div>
+</div>
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgotPinOtpVerifyForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-pin-otp-verify [isUnknowUser]='isOpenForgotPinOtpVerifyForm' (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"  
+    (unKnowUserForgotPinVeryFiedOtp)="unKnowUserForgotPinVeryFiedOtp($event)"></app-forgot-pin-otp-verify>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenResetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-reset-pin [isUnknowUser]='isOpenResetPinForm' (unKnowUseResetPin)="unKnowUseResetPin($event)"></app-forgot-reset-pin>
+  </div>
+</div>

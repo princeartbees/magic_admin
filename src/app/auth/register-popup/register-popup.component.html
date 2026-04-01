@@ -1,0 +1,55 @@
+
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-login *ngIf="isOpenLoginForm" [isUnknowUser]='isOpenLoginForm'  (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (isOpenRegisterFormPopup)="isOpenRegisterFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)"></app-login>
+    <app-register *ngIf="isOpenRegisterForm" [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+    <app-otp-veryfication *ngIf="isOpenOtpVeryFicationForm" [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+    <app-create-reset-pin *ngIf="isOpenCreatePinForm" [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+    <app-forget-pin *ngIf="isOpenForgetPinForm" [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)"></app-forget-pin>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="false" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenRegisterForm = !isOpenRegisterForm" *ngIf="isOpenRegisterForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-register [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="false" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="false" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenCreatePinForm = !isOpenCreatePinForm" *ngIf="isOpenCreatePinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-create-reset-pin [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="false" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenForgetPinForm = !isOpenForgetPinForm" *ngIf="isOpenForgetPinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forget-pin [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)"></app-forget-pin>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgotPinOtpVerifyForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-pin-otp-verify [isUnknowUser]='isOpenForgotPinOtpVerifyForm' (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"  
+    (unKnowUserForgotPinVeryFiedOtp)="unKnowUserForgotPinVeryFiedOtp($event)"></app-forgot-pin-otp-verify>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenResetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-reset-pin [isUnknowUser]='isOpenResetPinForm' (unKnowUseResetPin)="unKnowUseResetPin($event)"></app-forgot-reset-pin>
+  </div>
+</div>

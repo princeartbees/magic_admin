@@ -1,0 +1,8 @@
+  <div class="w-full max-w-[500px] rounded-2xl bg-d2 px-6 xl:px-8 py-10 xl:py-12 space-y-5 md:space-y-6 lg:space-y-7 xl:space-y-[30px]">
+      <img src="assets/images/logout.webp" alt="logout" class="mx-auto" />
+      <span class="block text-xl xl:text-24 text-secondary font-bold text-center">{{"Are you sure you want to logout" | translate}}?</span>
+      <div class="flex space-x-5">
+          <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5 bg-transparent text-primary hover:text-white hover:bg-primary" (click)="onClose()">{{"Cancel" | translate}} </button>
+          <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5" (click)="logoutPage()">{{"Logout" | translate}}</button>
+      </div>
+  </div>

@@ -1,0 +1,226 @@
+@font-face {
+  font-family: icomoon;
+  src: url("../fonts/icomoon.eot?o9h9b0");
+  src: url("../fonts/icomoon.eot?o9h9b0#iefix") format("embedded-opentype"),
+    url("../fonts/icomoon.ttf?o9h9b0") format("truetype"),
+    url("../fonts/icomoon.woff?o9h9b0") format("woff"),
+    url("../fonts/icomoon.svg?o9h9b0#icomoon") format("svg");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-translate_unfill:before {
+  content: "\e940";
+}
+.icon-translate_fill:before {
+  content: "\e941";
+}
+.icon-share:before {
+  content: "\e93f";
+}
+.icon-pinterest:before {
+  content: "\e93e";
+}
+.icon-dislike_fill:before {
+  content: "\e93a";
+}
+.icon-like_unfill:before {
+  content: "\e93b";
+}
+.icon-dislike_unfill:before {
+  content: "\e93c";
+}
+.icon-like_fill:before {
+  content: "\e93d";
+}
+.icon-unfill_order:before {
+  content: "\e91c";
+}
+.icon-unfill_cart:before {
+  content: "\e904";
+}
+.icon-unfill_wishlist:before {
+  content: "\e908";
+}
+.icon-fill_wishlist:before {
+  content: "\e909";
+}
+.icon-fill_user:before {
+  content: "\e915";
+}
+.icon-unfill_user:before {
+  content: "\e930";
+}
+.icon-fill_cart:before {
+  content: "\e934";
+}
+.icon-fill_home:before {
+  content: "\e937";
+}
+.icon-unfill_home:before {
+  content: "\e938";
+}
+.icon-fill_order:before {
+  content: "\e939";
+}
+.icon-half-ratting:before {
+  content: "\e92e";
+  color: #ffb800;
+}
+.icon-unfill_star:before {
+  content: "\e935";
+}
+.icon-twitter:before {
+  content: "\e931";
+}
+.icon-menu1:before {
+  content: "\e936";
+}
+.icon-filter:before {
+  content: "\e933";
+}
+.icon-header-menu:before {
+  content: "\e932";
+}
+.icon-log-out:before {
+  content: "\e92f";
+  color: #ff3b30;
+}
+.icon-eye:before {
+  content: "\e90d";
+}
+.icon-refund:before {
+  content: "\e907";
+}
+.icon-cancellation:before {
+  content: "\e911";
+}
+.icon-delivery:before {
+  content: "\e921";
+}
+.icon-cod:before {
+  content: "\e922";
+}
+.icon-online-pay:before {
+  content: "\e92d";
+}
+.icon-transit:before {
+  content: "\e92c";
+}
+.icon-Image:before {
+  content: "\e92b";
+}
+.icon-edit:before {
+  content: "\e926";
+}
+.icon-dollar:before {
+  content: "\e927";
+}
+.icon-push-button:before {
+  content: "\e928";
+}
+.icon-dot:before {
+  content: "\e929";
+}
+.icon-edit-profile:before {
+  content: "\e92a";
+}
+.icon-close:before {
+  content: "\e925";
+}
+.icon-true:before {
+  content: "\e900";
+}
+.icon-star:before {
+  content: "\e901";
+}
+.icon-instagram:before {
+  content: "\e902";
+}
+.icon-facebook:before {
+  content: "\e903";
+}
+.icon-youtube:before {
+  content: "\e905";
+}
+.icon-video:before {
+  content: "\e906";
+}
+.icon-search:before {
+  content: "\e90a";
+}
+.icon-map:before {
+  content: "\e90b";
+}
+.icon-discount:before {
+  content: "\e90c";
+}
+.icon-clock:before {
+  content: "\e90e";
+}
+.icon-mail:before {
+  content: "\e90f";
+}
+.icon-phone:before {
+  content: "\e910";
+}
+.icon-none-return:before {
+  content: "\e912";
+}
+.icon-close-eye:before {
+  content: "\e913";
+}
+.icon-menu:before {
+  content: "\e914";
+}
+.icon-down-arrow:before {
+  content: "\e916";
+}
+.icon-miniues:before {
+  content: "\e917";
+}
+.icon-delivered:before {
+  content: "\e918";
+}
+.icon-shipped:before {
+  content: "\e919";
+}
+.icon-order-confirmed:before {
+  content: "\e91a";
+}
+.icon-subscription:before {
+  content: "\e91b";
+}
+.icon-alert:before {
+  content: "\e91d";
+}
+.icon-upload-file:before {
+  content: "\e91e";
+}
+.icon-sucess:before {
+  content: "\e91f";
+}
+.icon-location:before {
+  content: "\e920";
+}
+.icon-pluse:before {
+  content: "\e923";
+}
+.icon-inr:before {
+  content: "\e924";
+}

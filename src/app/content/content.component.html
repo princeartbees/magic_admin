@@ -1,0 +1,117 @@
+<!-- loader -->
+<div class="fixed inset-0 flex items-center justify-center z-[998] page-loader">
+  <span class="block absolute inset-0 bg-white/50 backdrop-blur-lg"></span>
+  <div class="relative z-[999]">
+    <img [src]="constants.loadingGif" alt="Magic hair care" class="max-w-[180px] w-full">
+  </div>
+</div>
+<main class="overflow-hidden" onclick="removeClass(['main_header','loginMenu'],'visibal-menu')">
+  <app-header *ngIf="!isLoading"></app-header>
+  <router-outlet />
+  <app-footer *ngIf="!isLoading"></app-footer>
+  <app-sticky-header class="min-[540px]:hidden"></app-sticky-header>
+</main>
+<!-- <div class="banner fixed inset-0 w-full h-screen flex overflow-y-auto z-[998] delayed-show">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+    <div class="w-full h-full py-8 sm:py-12 px-5 overflow-y-auto flex relative z-50">
+      <div class="bg-[#CCE0BD] border-2 md:border-4 border-white w-full max-w-[350px] md:max-w-3xl lg:max-w-5xl px-5 md:px-7 lg:px-10 py-8 pb-7 xl:px-14 xl:py-11 xl:pb-11 m-auto relative">
+        <span class="icon-close text-[20px] cursor-pointer absolute top-5 right-5 z-50" (click)="closeBanner()"></span>
+        <div class="flex items-center flex-wrap -mx-3.5 relative z-20">
+          <div class="w-full md:w-1/2 lg:w-1/2 p-3.5 md:pb-3.5 pb-0 md:order-2">
+            <img src="../../assets/images/sign_dic.png" class="mx-auto w-full max-w-56 sm:max-w-80 lg:max-w-full" alt="sign_dic"/>
+          </div>
+          <div class="w-full md:w-1/2 lg:w-1/2 p-3.5 pb-0 sm:pb-3.5 md:order-1 text-center md:text-left">
+            <div class="pb-4 sm:pb-7 lg:pb-9">
+              <span class="text-18 xs:text-20 xl:text-24 2xl:text-[32px] 2xl:leading-[42px] text-dark font-medium block mb-1.5">{{"Exclusive Offer" | translate}} <b class="text-primary">15% OFF</b> {{"On Mobile App" | translate}}!</span>
+              <p class="text-12 xs:text-14 sm:text-16 xl:text-18 2xl:text-20 text-dark/70 mb-5">{{"Sign up today and grab an exclusive" | translate}} 15% {{"OFF" | translate}}</p>
+              <div class="flex justify-center md:justify-start space-x-3">
+                <a href="https://apps.apple.com/in/app/magics-hair-care/id6736384698" class="inline-block max-w-28 lg:max-w-36">
+                  <img src="../../assets/images/app_store.webp" alt="app_store"/>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.magichaircare.magichaircare" class="inline-block max-w-28 lg:max-w-36">
+                  <img src="../../assets/images/g_play.webp" alt="g_play"/>
+                </a>
+              </div>
+            </div>
+            <div class="pt-4 sm:pt-7 lg:pt-8 border-t sm:border-t-2 border-primary border-dashed">
+              <span class="text-18 xs:text-20 xl:text-24 2xl:text-[32px] 2xl:leading-[42px] text-dark font-medium block mb-1.5">{{"On your first order" | translate}} <b class="text-primary">10% OFF</b></span>
+              <p class="text-12 xs:text-14 sm:text-16 xl:text-18 2xl:text-20 text-dark/70 mb-6">{{"Sign up today and grab an exclusive" | translate}} 10% {{"OFF" | translate}}</p>
+              <button class="product_buy_btn py-1.5 sm:py-2.5 lg:py-3.5 max-w-28 xs:max-w-32 md:max-w-44 md:mx-0 inline-block" (click)="isOpenLoginForm = true">{{"Sign Up" | translate}}</button>
+            </div>
+          </div>          
+      </div>
+      <img src="../../assets/images/pop_offer_bg.png" class="absolute inset-0 w-full h-full object-cover" alt="pop_offer"/>
+    </div>
+  </div>
+</div> -->
+
+<div class="banner fixed inset-0 w-full h-screen flex overflow-y-auto z-[998] delayed-show">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+    <div class="w-full h-full py-8 sm:py-12 px-1.5 lg:px-3.5 overflow-y-auto flex relative z-50">
+      <!-- Desktop Banner: Show on screens >= 1024px -->
+      <div class="hidden lg:block bg-[#CCE0BD] border-2 md:border-4 border-white w-full max-w-6xl h-[450px] px-5 md:px-7 lg:px-10 py-8 pb-7 xl:px-14 xl:py-11 xl:pb-11 m-auto relative">
+        <span class="icon-close text-[20px] text-white cursor-pointer absolute top-5 right-5 z-50" (click)="closeBanner()"></span>
+        <img src="../../assets/images/banner.webp" class="absolute inset-0 w-full h-full object-cover" alt="pop_offer"/>
+      </div>
+      <!-- Mobile Banner: Show on screens < 1024px -->
+      <!-- <div class="block lg:hidden bg-[#CCE0BD] border-2 md:border-4 border-white w-full max-w-6xl h-[450px] px-5 md:px-7 lg:px-10 py-8 pb-7 xl:px-14 xl:py-11 xl:pb-11 m-auto relative">
+        <span class="icon-close text-[20px] text-white cursor-pointer absolute top-5 right-5 z-50" (click)="closeBanner()"></span>
+        <img src="../../assets/images/bennar_mobile.webp" class="absolute inset-0 w-full h-full object-cover" alt="pop_offer"/>
+      </div> -->
+
+      <div class="block lg:hidden bg-[#CCE0BD] border-2 md:border-4 border-white w-full max-w-6xl h-[220px] sm:h-[300px] px-5 md:px-7 lg:px-10 py-8 pb-7 xl:px-14 xl:py-11 xl:pb-11 m-auto relative">
+        <span class="icon-close text-[20px] text-white cursor-pointer absolute top-5 right-5 z-50" (click)="closeBanner()"></span>
+        <img src="../../assets/images/banner_mobile1.webp" class="absolute inset-0 w-full h-full object-cover" alt="pop_offer"/>
+      </div>
+    </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenLoginForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-login [isUnknowUser]='isOpenLoginForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (isOpenRegisterFormPopup)="isOpenRegisterFormPopup($event)" (unknowUserlogIn)="unknowUserlogIn($event)" (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"></app-login>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenRegisterForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenRegisterForm = !isOpenRegisterForm" *ngIf="isOpenRegisterForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-register [isUnknowUser]='isOpenRegisterForm' (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" (unKnowUserRegister)="unKnowUserRegister($event)"></app-register>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenOtpVeryFicationForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (isOpenForGetPinFormPopup)="isOpenForGetPinFormPopup($event)" (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenCreatePinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenCreatePinForm = !isOpenCreatePinForm" *ngIf="isOpenCreatePinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-create-reset-pin [isUnknowUser]='isOpenCreatePinForm' (unKnowUserCreatePin)="unKnowUserCreatePin($event)"></app-create-reset-pin>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenForgetPinForm = !isOpenForgetPinForm" *ngIf="isOpenForgetPinForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forget-pin [isChangeMail]="isChangeMail" (isOpenLogInFormPopup)="isOpenLogInFormPopup($event)" [isUnknowUser]='isOpenForgetPinForm' (unKnowUserForgetPin)="unKnowUserForgetPin($event)" (unknowUserlogIn)="unknowUserlogIn($event)"></app-forget-pin>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenForgotPinOtpVerifyForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-pin-otp-verify [isUnknowUser]='isOpenForgotPinOtpVerifyForm' (isOpenForGetPinViaOtpFormPopup)="isOpenForGetPinViaOtpFormPopup($event)"  
+    (unKnowUserForgotPinVeryFiedOtp)="unKnowUserForgotPinVeryFiedOtp($event)"></app-forgot-pin-otp-verify>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenResetPinForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-forgot-reset-pin [isUnknowUser]='isOpenResetPinForm' (unKnowUseResetPin)="unKnowUseResetPin($event)"></app-forgot-reset-pin>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+.delayed-show {
+  visibility: hidden; /* Initially hidden */
+  opacity: 0; /* Fully transparent */
+  animation: showDiv 11s forwards; /* Apply animation */
+}
+
+@keyframes showDiv {
+  90% {
+    visibility: hidden; /* Hidden at the start */
+    opacity: 0; /* Fully transparent */
+  }
+  100% {
+    visibility: visible; /* Visible after 10 seconds */
+    opacity: 1; /* Fully opaque */
+  }
+}
+

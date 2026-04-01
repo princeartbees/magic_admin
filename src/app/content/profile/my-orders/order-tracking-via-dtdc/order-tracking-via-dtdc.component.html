@@ -1,0 +1,65 @@
+
+<div class="p-5 rounded-lg"> 
+  <div class="w-full flex items-center justify-between">
+    <span class="block text-18 md:text-24 font-semibold">{{"Order Tracking Details" | translate}}</span>
+    <span class="icon-close block text-18 md:text-24 font-semibold ml-auto cursor-pointer" (click)="closeDailog()"></span>
+  </div>
+  
+  <div class="mt-5 xl:mt-7">
+    <mat-dialog-content class="mat-typography">
+      <!-- <mat-accordion class="drop_table" *ngFor="let item of odertrackingDetials?.variants">
+        <mat-expansion-panel hideToggle>
+          <mat-expansion-panel-header>
+            <mat-panel-title class="space-x-6 md:space-x-8 xl:space-x-10">
+              <div class="w-12 h-12">
+                <img [src]="(item?.variantId?.productId?.bannerImage) ? constants.baseImageUrl + item?.variantId?.productId?.bannerImage : constants.defaultImage" class="w-full h-full rounded-full overflow-hidden" alt="">
+              </div>
+              <div [title]="item?.variantId?.productId?.product_name">
+                <span class="text-16 font-medium whitespace-nowrap block w-96 text-ellipsis overflow-hidden cursor-default">{{item?.variantId?.productId?.product_name}}</span>
+                <span class="text-16 font-bold whitespace-nowrap">{{item?.currency == 'INR' ? '$' : '₹'}} {{item?.discounted_amount}} </span>
+              </div>
+            </mat-panel-title>
+            <mat-panel-description class="justify-end">
+              <div class="flex items-center justify-end space-x-3">
+                <span class="block icon-down-arrow text-xs cursor-pointer text-primary anim"></span>
+              </div>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          
+          <div class="flex items-center bg-white px-10 pl-5" *ngFor="let track of item?.ordertrackingDetails?.trackDetails">
+            <div class="space-y-6 border-l-2 border-dashed traking">
+              <div class="relative w-full pb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3E6227" class="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-primary">
+                  <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                </svg>
+                <div class="ml-6">
+                  <h4 class="font-bold text-primary">{{track?.strAction}}</h4>
+                  <p class="mt-1 max-w-screen-sm text-sm text-gray-500">{{track?.strOrigin}}</p>
+                  <span class="mt-1 block text-sm font-semibold text-primary">{{track?.strActionDate + " " + track?.strActionTime }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion> -->
+
+
+      <div class="flex items-center bg-white px-10 pl-5" *ngFor="let track of odertrackingDetials">
+        <div class="space-y-6 border-l-2 border-dashed traking">
+          <div class="relative w-full pb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#3E6227" class="absolute -top-0.5 z-10 -ml-3.5 h-7 w-7 rounded-full text-primary">
+              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+            <div class="ml-6">
+              <h4 class="font-bold text-primary">{{track?.activity}}</h4>
+              <p class="mt-1 max-w-screen-sm text-sm text-gray-500">{{track?.location}}</p>
+              <span class="mt-1 block text-sm font-semibold text-primary">{{track?.strActionDate + " " + track?.strActionTime }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </mat-dialog-content>
+    
+  </div>
+</div>

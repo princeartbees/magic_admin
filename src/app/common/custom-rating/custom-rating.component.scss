@@ -1,0 +1,18 @@
+.rating {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating .fas {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.rating .fas.active {
+  color: #ffd700; /* gold color */
+}
+
+.rating-value {
+  font-size: 18px;
+  margin-left: 10px;
+}

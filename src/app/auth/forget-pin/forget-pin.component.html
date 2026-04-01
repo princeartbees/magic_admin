@@ -1,0 +1,21 @@
+<div class="bg-d2 w-full max-w-[500px] md:min-w-[500px] rounded-3xl">
+  <div class="relative z-10 px-5 lg:px-6 xl:px-7 py-5 md:py-8 lg:py-10 xl:py-12">
+    <div class="text-18 lg:text-24 font-bold text-secondary pb-5 lg:pb-6 xl:pb-7">{{"Please verify your Email or Mobile No." | translate}}</div>
+    <form #forgetPinForm="ngForm" [formGroup]="forgetPin">
+      <div class="relative pb-5">
+        <div class="w-full">
+          <span class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Email or Mobile number" | translate}}</span>
+          <input class="w-full bg-white text-16 text-d5 font-medium px-4 lg:px-5 py-3 lg:py-4 rounded-[10px] border border-d1 focus:outline-none focus:shadow-outline"
+              type="email" [formControlName]="'email'" placeholder="Enter your email or mobile" />
+          </div>
+          <!-- <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="forgetPin.controls['email'].value && (forgetPin.controls['email'].touched && forgetPin.controls['email'].invalid)">*{{"Please enter valid Email." | translate}}</span> -->
+          <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="!forgetPin.controls['email'].value && forgetPin.controls['email'].hasError('required') && forgetPin.controls['email'].touched">*{{"Please enter Email or Mobile No." | translate}}</span>
+      </div>
+      <button class="inline-block w-full btn_primary text-sm px-3.5 lg:px-6 xl:px-10 sm:text-base xl:text-lg anim py-3 xl:py-4 mt-5 lg:mt-7" (click)="getOtp()">{{"Request OTP" | translate}}</button>
+      <div class="text-center pt-3 xl:pt-4">
+        <div class="text-16 text-secondary font-normal">{{"Already have an account" | translate}} <span class="underline text-primary cursor-pointer" (click)="loginUser()">{{"Sign In" | translate}}?</span></div>
+        <span class="underline whitespace-nowrap text-primary text-16 font-normal cursor-pointer" [routerLink]="'/home'" (click)="closeDialog()">{{"Go to site" | translate}}</span>
+      </div>
+    </form>
+  </div>
+</div>

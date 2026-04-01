@@ -1,0 +1,307 @@
+<div class="flex flex-wrap justify-center -mx-5">
+  <div class="w-full flex items-center justify-center flex-col mb-5" *ngIf="reviewList?.length == 0">
+    <div class="shop-filter max-w-40 lg:max-w-xs w-full">
+      <mat-form-field>
+        <mat-label>{{"Sort Review" | translate}}</mat-label>
+        <mat-select [(ngModel)]="filteredProductKey" name="sortReivew"
+        (ngModelChange)="sortByReview($event)">
+          <mat-option  *ngFor="let item of sortReivew; let i = index" [value]="item.value">
+            <span class="text-base font-medium text-dark">{{item?.key | translate}}</span>
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <img src="./assets/images/no_rating_review.webp" alt="Filter data not found" class="w-full h-full max-w-[480px] mx-auto">
+    <span class="block text-3xl font-medium text-d4 text-center">{{"No ratings & reviews" | translate}}</span>
+  </div>
+  <div class="w-full order-2 lg:order-1 lg:w-3/12 p-5 space-y-4 lg:space-y-6 xl:space-y-12" *ngIf="reviewList?.length > 0">
+    <div class="space-y-3 lg:space-y-5">
+      <span class="xl_titel block">{{"Customers Reviews" | translate}}</span>
+      <div class="space-y-1">
+        <div class="flex items-start" [ngClass]="isBetweenRating ? 'space-x-0' : 'space-x-2'">
+          <div class="flex items-center space-x-1" *ngIf="reviewListData?.averageRating > 0">
+            <!-- <app-custom-rating [ratingValue]="reviewListData?.averageRating"></app-custom-rating> -->
+            <span *ngFor="let item of ratingArray">
+              <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="item?.ratting"></span>
+              <span class="inline-block icon-unfill_star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="!item?.ratting && !item?.isBetween"></span>
+              <span class="block" *ngIf="item?.isBetween && !item?.ratting">
+                <span class="inline-block icon-half-ratting text-base xl:text-lg fotn-semibold text-ratting"></span>
+              </span>
+            </span>
+          </div>
+          <span class="text-base xl:text-lg font-medium text-dark">{{reviewListData?.averageRating}} out of 5</span>
+        </div>
+        <span class="text-14 md:text-base text-d4">{{reviewListData?.globalRatings}} {{"global ratings" | translate}}</span>
+      </div>
+      <div class="space-y-2">
+        <div class="flex items-center">
+          <div class="xl_titel w-7 flex items-center">5
+            <span class="inline-block icon-star text-16 text-[#FFB800] ml-1"></span>
+          </div>
+          <div class="w-full h-6 lg:h-8 mx-2 bg-gray-200 rounded">
+            <div class="h-6 lg:h-8 bg-[#FFB800] rounded" [ngStyle]="{'width': reviewListData?.fiveRating + '%'}" [ngClass]="reviewListData?.fiveRating ? 'bg-[#FFB800]' : 'bg-gray-200'"></div>
+          </div>
+          <span class="xl_titel w-5">{{reviewListData?.fiveRating ?? 0}}%</span>
+        </div>
+        <div class="flex items-center">
+          <div class="xl_titel w-7 flex items-center">4
+            <span class="inline-block icon-star text-16 text-[#FFB800] ml-1"></span>
+          </div>
+          <div class="w-full h-6 lg:h-8 mx-2 bg-gray-200 rounded">
+            <div class="h-6 lg:h-8 rounded" [ngStyle]="{'width': reviewListData?.fourRating + '%'}" [ngClass]="reviewListData?.fourRating ? 'bg-[#FFB800]' : 'bg-gray-200'"></div>
+          </div>
+          <span class="xl_titel w-5">{{reviewListData?.fourRating ?? 0}}%</span>
+        </div>
+        <div class="flex items-center">
+          <div class="xl_titel w-7 flex items-center">3
+            <span class="inline-block icon-star text-16 text-[#FFB800] ml-1"></span>
+          </div>
+          <div class="w-full h-6 lg:h-8 mx-2 bg-gray-200 rounded">
+            <div class="h-6 lg:h-8 rounded" [ngStyle]="{'width': reviewListData?.threeRating + '%'}" [ngClass]="reviewListData?.threeRating ? 'bg-[#FFB800]' : 'bg-gray-200'"></div>
+          </div>
+          <span class="xl_titel w-5">{{reviewListData?.threeRating ?? 0}}%</span>
+        </div>
+        <div class="flex items-center">
+          <div class="xl_titel w-7 flex items-center">2
+            <span class="inline-block icon-star text-16 text-[#FFB800] ml-1"></span>
+          </div>
+          <div class="w-full h-6 lg:h-8 mx-2 bg-gray-200 rounded">
+            <div class="h-6 lg:h-8 rounded" [ngStyle]="{'width': reviewListData?.twoRating + '%'}" [ngClass]="reviewListData?.twoRating ? 'bg-[#FFB800]' : 'bg-gray-200'"></div>
+          </div>
+          <span class="xl_titel w-5">{{ reviewListData?.twoRating ?? 0 }}%</span>
+        </div>
+        <div class="flex items-center">
+          <div class="xl_titel w-7 flex items-center">1
+            <span class="inline-block icon-star text-16 text-[#FFB800] ml-1"></span>
+          </div>
+          <div class="w-full h-6 lg:h-8 mx-2 bg-gray-200 rounded">
+            <div class="h-6 lg:h-8 rounded" [ngStyle]="{'width': reviewListData?.oneRating + '%'}" [ngClass]="reviewListData?.oneRating ? 'bg-[#FFB800]' : 'bg-gray-200'"></div>
+          </div>
+          <span class="xl_titel w-5">{{ reviewListData?.oneRating ?? 0 }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="w-full order-1 lg:order-1 lg:w-9/12 p-5" *ngIf="reviewList?.length > 0">
+    <div class="w-full flex items-center lg:mb-5">
+      <div >
+        <!-- <span class="xl_titel block">Reviews with images</span> -->
+        <span class="xl_titel block">{{"Most useful reviews" | translate}}</span>
+      </div>
+      <div class="shop-filter w-full max-w-40 lg:max-w-xs sm:ml-auto">
+        <mat-form-field>
+          <mat-label>{{"Sort Review" | translate}}</mat-label>
+          <mat-select [(ngModel)]="filteredProductKey" name="sortReivew"
+          (ngModelChange)="sortByReview($event)">
+            <mat-option  *ngFor="let item of sortReivew; let i = index" [value]="item.value">
+              <span class="text-base font-medium text-dark">{{item?.key | translate}}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="space-y-5 lg:space-y-7">
+      <div class="w-full flex flex-wrap items-center">
+        <span class="text-xl lg:text-24 xl:text-26 font-bold text-secondary mr-5 hidden sm:inline-block">{{"Products" | translate}}</span>
+      </div>
+      <div class="space-y-6 pl-12" *ngIf="!isLoading">
+        <div class="w-full" *ngFor="let review of reviewList">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="( review?.createBy?.profile_pic) ? constants.baseImageUrl + review?.createBy?.profile_pic :  constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="space-y-1">
+                <span class="xl_titel block">{{review?.createBy?.fullname}}</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="flex mr-3 space-x-0.5">
+                    <span *ngFor="let subItem of review?.ratingArray">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="subItem?.ratting"></span>
+                      <span class="inline-block icon-unfill_star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="!subItem?.ratting && !subItem?.isBetween"></span>
+                      <span class="block" *ngIf="subItem?.isBetween && !subItem?.ratting">
+                        <span class="inline-block icon-half-ratting text-base xl:text-lg fotn-semibold text-ratting"></span>
+                      </span>
+                    </span>
+                  </div>
+                  <span class="text-base xl:text-lg font-medium text-dark">{{review?.rating}} out of 5</span>
+
+                  <!-- <p-rating [(ngModel)]="review.rating" [stars]="5" [readonly]="true" [cancel]="false" /> -->
+                </div>
+              </div>
+            </div>
+            <span class="ml-auto text-d4 text-xs sm:text-sm">{{review?.createAtTimestamp | date:'dd/MM/yyyy'}}</span>
+          </div>
+          <span class="w-full xl_titel block text-xs lg:text-sm overflow-hidden text-ellipsis">“{{review?.title}}”</span>
+          <!-- <span class="text-sm lg:text-base text-d4 mt-1">{{review?.description}}</span> -->
+          <p class="text-sm lg:text-base text-d4 mt-1 text-justify break-all">{{(review.reviewDesc) ? review?.description : review?.description | slice:0:100}} <span *ngIf="review.reviewDesc==false && review?.description.length >= 100">...</span></p>
+          <a href="javascript:;" (click)="review.reviewDesc=true;$event.stopPropagation()" *ngIf="!review.reviewDesc && review?.description.length > 100" class="text-magicPotion text-sm font-semibold cursor-pointer">...Read More</a>
+          <a href="javascript:;" (click)="review.reviewDesc=false;$event.stopPropagation()" *ngIf="review.reviewDesc && review?.description.length > 100" class="text-magicPotion text-sm font-semibold cursor-pointer">...Read Less</a>
+          <div class="flex flex-wrap -mx-1">
+            <div  *ngFor="let image of review.media">
+              <div class="w-[70px] h-[70px] p-1.5 rounded-md overflow-hidden" *ngIf="image.type == 'image'">
+                <p-image [src]="(image?.path) ? constants.baseImageUrl + image?.path: constants.defaultImage"
+                  imageClass="w-full h-full object-cover rounded" styleClass="w-full h-full" [preview]="true"
+                  (error)="imageOnError($event)"></p-image>
+              </div>
+              <div class="w-[70px] h-[70px] p-1.5 rounded-md overflow-hidden" *ngIf="image.type == 'video'">
+                <video class="w-full h-full rounded object-cover" controls>
+                  <source [src]="(image?.path) ? constants.baseImageUrl + image?.path: constants.defaultImage"
+                    imageClass="w-full h-full object-cover rounded" styleClass="w-full h-full"
+                    (error)="imageOnError($event)">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="space-y-6 pl-12 animate-pulse" *ngIf="isLoading">
+        <div class="w-full">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="w-full space-y-1">
+                <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="w-60 flex pr-3 space-x-0.5">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm ml-auto">&nbsp;&nbsp;</span>
+          </div>
+          <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+          <span class="block w-full max-w-40 md:max-w-48 lg:max-w-64 text-xs leading-[22px] bg-gray-300 rounded-sm mt-1">&nbsp;&nbsp;</span>
+        </div>
+        <div class="w-full">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="w-full space-y-1">
+                <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="w-60 flex pr-3 space-x-0.5">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm ml-auto">&nbsp;&nbsp;</span>
+          </div>
+          <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+          <span class="block w-full max-w-40 md:max-w-48 lg:max-w-64 text-xs leading-[22px] bg-gray-300 rounded-sm mt-1">&nbsp;&nbsp;</span>
+        </div>
+        <div class="w-full">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="w-full space-y-1">
+                <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="w-60 flex pr-3 space-x-0.5">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm ml-auto">&nbsp;&nbsp;</span>
+          </div>
+          <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+          <span class="block w-full max-w-40 md:max-w-48 lg:max-w-64 text-xs leading-[22px] bg-gray-300 rounded-sm mt-1">&nbsp;&nbsp;</span>
+        </div>
+        <div class="w-full">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="w-full space-y-1">
+                <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="w-60 flex pr-3 space-x-0.5">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm ml-auto">&nbsp;&nbsp;</span>
+          </div>
+          <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+          <span class="block w-full max-w-40 md:max-w-48 lg:max-w-64 text-xs leading-[22px] bg-gray-300 rounded-sm mt-1">&nbsp;&nbsp;</span>
+        </div>
+        <div class="w-full">
+          <div class="flex items-center mb-2">
+            <div class="flex items-center space-x-3 lg:space-x-4 -translate-x-12">
+              <div>
+                <span class="w-10 h-10 rounded-full block overflow-hidden">
+                  <img [src]="constants.defaultImage"
+                    class="w-full h-full object-cover" alt="profile" />
+                </span>
+              </div>
+              <div class="w-full space-y-1">
+                <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <div class="flex items-center flex-wrap">
+                  <div class="w-60 flex pr-3 space-x-0.5">
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-gray-300"></span>
+                      <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm ml-auto">&nbsp;&nbsp;</span>
+          </div>
+          <span class="block w-full max-w-32 md:max-w-40 lg:max-w-48 text-xs leading-[22px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+          <span class="block w-full max-w-40 md:max-w-48 lg:max-w-64 text-xs leading-[22px] bg-gray-300 rounded-sm mt-1">&nbsp;&nbsp;</span>
+        </div>
+      </div>
+    </div>
+    <div class="w-full mt-5" *ngIf="reviewList.length > 0 && ispagination == true">
+      <p-paginator (onPageChange)="paginationPayload($event)" [first]="1" [rows]="limit" [totalRecords]="totalReview" [rowsPerPageOptions]="[10,20,50]" />
+    </div>
+  </div>
+</div>

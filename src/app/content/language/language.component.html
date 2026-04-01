@@ -1,0 +1,56 @@
+<div class="fixed inset-0 w-full h-screen bg-black/30 backdrop-blur-sm flex z-[998]">
+  <!-- <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none" (click)="closeDialog()"></span> -->
+  <div class="w-full h-full py-12 px-5 overflow-y-auto flex">
+    <div class="bg-d2 w-full max-w-[450px] rounded-lg lg:rounded-3xl p-5 py-7 m-auto" [ngStyle]="{'transform':isOpenDialog?'scale(1)':'scale(0)'}">
+      <div class="w-full">
+        <div class="w-full relative bg-fe-primary rounded-tr-4.5 rounded-tl-4.5 p-4.5">
+          <span class="block text-18 lg:text-24 font-bold text-secondary">Translate Language</span>
+          <div class="absolute top-1/2 -translate-y-1/2 right-0 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer bg-fe-secondary" (click)="closeDialog()">
+            <span class="inline-block icon-close text-secondary text-sm leading-[14px]"></span>
+          </div>
+        </div>
+      </div>
+      <div class="w-full">
+        <div class="w-full relative my-3.5 md:my-5">
+          <span class="text-16 block font-semibold">Language</span>
+          <div class="bg-white flex items-center rounded-md cursor-pointer select-none text-fe-primary p-4 mt-1.5" (click)="selectLanguageDropdown()">
+            <span class="text-inherit">
+              <img [src]="selectedLanguage ? selectedLanguage?.imgUrl : './assets/images/global-earth.png'" alt=""/>
+            </span>
+            <span class="inline-block text-inherit ml-4">{{selectedLanguage? selectedLanguage?.name : 'Select Language'}}</span>
+            <span class="icon-down-arrow text-[8px] ml-auto anim" [ngClass]="isLanguageDropdownOpen? 'rotate-180' : 'rotate-360'"></span>
+          </div>
+          <div class="dropdown absolute inset-x-0 top-full h-full bg-primary space-y-2 overflow-hidden transition-all duration-150 z-[5]" [ngStyle]="{'height':isLanguageDropdownOpen ? languageDropdownHeight + 'px' : '0px'}">
+            <ul id="language-dropdown" class="max-h-[186px] overflow-y-auto pb-4.5">
+              <div class="w-full sticky top-0 left-0 right-0 bg-fe-primary px-5 pt-4.5 mb-2.5 z-[6]">
+                <div class="relative">
+                  <input id="laguage_search" type="text" class="w-full text-sm font-medium text-secondary bg-d2 rounded-sm outline-none p-2.5 pr-9" (keydown)="searchLanguage($event)" (keyup)="searchLanguage($event)" placeholder="Search Languages" [value]="languageInputSearch">
+                  <label for="laguage_search" class="icon-search text-primary absolute top-1/2 -translate-y-1/2 right-2.5 cursor-pointer" *ngIf="languageInputSearch.length == 0"></label>
+                  <div class="inline-block absolute top-1/2 -translate-y-1/2 right-2.5 cursor-pointer" *ngIf="languageInputSearch.length > 0">
+                    <span class="icon-add rotate-45 block text-primary" (click)="clearSearch('#laguage_search')"></span>
+                  </div>
+                </div>
+              </div>
+              <li class="relative flex items-center text-white text-sm font-medium cursor-pointer leading-5 px-5 py-1 group" *ngFor="let item of filteredLanguageArr;let i = index" (click)="selectionChangeLanguage(item)">
+                <span class="inline-block bg-white">
+                  <img [src]="item.imgUrl" alt="">
+                </span> 
+                <span class="text-inherit ml-4">{{item?.name}}</span>
+                <div class="relative ml-auto" *ngIf="item?.isSelected">
+                  <svg class="w-[18px]" viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M7.43421 0C7.78287 0.0428565 8.13613 0.0642847 8.4796 0.132517C9.29792 0.29492 10.1013 0.233455 10.9179 0.0947354C11.3777 0.0163531 11.8618 0.0597735 12.3338 0.0716155C12.4692 0.0749989 12.6093 0.144923 12.7355 0.20808C13.2887 0.483827 13.7636 0.865588 14.1301 1.34998C14.4891 1.82478 14.9663 2.1073 15.5005 2.3323C15.7702 2.44564 16.0393 2.56462 16.2975 2.70109C17.208 3.18266 17.6414 3.97043 17.782 4.94316C17.8454 5.37905 17.8961 5.8189 17.9993 6.24633C18.0569 6.48656 18.1935 6.71324 18.3209 6.93147C18.6176 7.44068 18.9121 7.95495 18.9801 8.54423C19.0735 9.35794 18.8326 10.1045 18.3698 10.7756C17.9814 11.3384 17.7619 11.9434 17.7244 12.6224C17.7065 12.95 17.6558 13.2804 17.5774 13.5996C17.325 14.6253 16.5828 15.2253 15.6342 15.5874C14.987 15.8343 14.4361 16.1682 13.997 16.7011C13.7693 16.9774 13.4823 17.2103 13.2069 17.4448C12.7476 17.8362 12.2059 18.0251 11.5973 17.9738C11.1559 17.9371 10.711 17.8886 10.2793 17.795C9.748 17.6794 9.22589 17.649 8.70435 17.8041C8.01684 18.0087 7.31838 18.073 6.62107 17.9033C6.36578 17.8413 6.11048 17.6969 5.90647 17.53C5.53419 17.2249 5.20571 16.8685 4.84726 16.5471C4.66573 16.3847 4.47382 16.2184 4.25714 16.1112C3.79726 15.8828 3.31088 15.7052 2.84754 15.4825C1.71629 14.9389 1.23855 13.9932 1.16594 12.8085C1.15902 12.6962 1.15729 12.5835 1.1619 12.4707C1.18265 11.931 1.02705 11.4427 0.711245 11.0034C0.310149 10.4457 0.0341078 9.82936 0.00241199 9.15212C-0.0160292 8.75739 0.0732953 8.34066 0.201231 7.96116C0.317641 7.61549 0.534901 7.29801 0.736026 6.98561C1.03397 6.52321 1.18899 6.0219 1.25296 5.4845C1.29502 5.12981 1.33133 4.7723 1.40682 4.4238C1.60795 3.49393 2.27241 2.94864 3.09362 2.54827C3.30511 2.44508 3.52468 2.35598 3.7454 2.27365C4.20182 2.10279 4.56545 1.81633 4.86167 1.4419C5.21262 0.998105 5.63792 0.638336 6.11221 0.322551C6.51849 0.051315 6.97088 0.0355258 7.43421 0ZM8.63174 10.4965C8.53838 10.3865 8.49228 10.3233 8.43695 10.2686C7.79727 9.64102 7.15875 9.0134 6.51503 8.38972C6.14448 8.03108 5.64772 8.00627 5.27141 8.31698C4.83689 8.67506 4.81441 9.24009 5.23164 9.65173C6.10702 10.5156 6.98874 11.3733 7.86816 12.2333C8.3799 12.7335 8.84957 12.7351 9.36016 12.2361C10.8291 10.7993 12.2975 9.36245 13.7665 7.92507C13.8074 7.88503 13.8489 7.84612 13.8869 7.80439C14.2569 7.40289 14.2113 6.84125 13.782 6.50122C13.3953 6.19445 12.917 6.23562 12.5246 6.61794C11.2832 7.82977 10.0436 9.04328 8.8052 10.2579C8.74527 10.3177 8.70435 10.3955 8.63174 10.4965Z" fill="#46BD32"/> <path d="M8.62916 10.495C8.70177 10.394 8.74269 10.3162 8.8032 10.257C10.0416 9.04238 11.2812 7.8283 12.5226 6.61704C12.9144 6.23471 13.3927 6.19355 13.78 6.50031C14.2093 6.84091 14.2549 7.40199 13.8849 7.80349C13.8463 7.84521 13.8048 7.88412 13.7645 7.92416C12.2955 9.36098 10.8271 10.7984 9.35816 12.2352C8.84757 12.7342 8.3779 12.7331 7.86615 12.2324C6.98674 11.3724 6.10502 10.5147 5.22964 9.65083C4.81241 9.23974 4.83488 8.67471 5.2694 8.31607C5.64572 8.00536 6.14248 8.03017 6.51303 8.38881C7.15674 9.01192 7.79527 9.64011 8.43495 10.2677C8.4897 10.3213 8.5358 10.385 8.62916 10.495Z" fill="white"/> </svg>
+                </div>
+                <span class="absolute inset-0 bg-gradient-to-r from-[rgba(255,255,255,0.43)] anim z-[5]" [ngClass]="item?.isSelected? 'w-full' : 'w-0 group-hover:w-full'"></span>
+              </li>
+              <li class="relative flex items-center text-white text-xs font-medium cursor-pointer leading-5 px-5 py-1 group" *ngIf="filteredLanguageArr?.length == 0">
+                language is not avalable
+              </li>
+            </ul>          
+          </div>
+        </div>
+      </div>
+      <div class="w-full">
+        <button type="button" class="inline-block w-full btn_primary text-sm px-3.5 lg:px-6 xl:px-10 sm:text-base xl:text-lg anim py-2.5 xl:py-3" (click)="onSubmit()">Select Language</button>
+      </div>
+    </div>
+  </div>
+</div>

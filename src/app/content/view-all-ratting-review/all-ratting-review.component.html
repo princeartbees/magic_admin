@@ -1,0 +1,83 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="wrapper text-center space-y-3.5">
+    <h1 class="h1">{{"Ratings & Reviews" | translate}}</h1>
+    <div class="relative flex items-center justify-center space-x-2 z-10">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer"
+        [routerLink]="'/home'">{{"Home" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer"
+        [routerLink]="'/shop'">{{"Shop" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Ratings & Reviews" | translate}}</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover" />
+</section>
+<section class="relative">
+  <div class="wrapper py-12 lg:py-16 xl:py-24">    
+    <div class="w-full" *ngIf="!isLoading">
+      <div class="flex flex-wrap pb-6 lg:pb-8 xl:pb-10 2xl:pb-12 -mx-5">
+        <div class="w-full p-5 space-y-8 lg:space-y-10 xl:space-y-14">
+          <div class="w-full flex flex-wrap xl:flex-nowrap">
+            <div class="md:w-3/12 space-y-2 md:space-y-5 p-1 sm:p-2 lg:p-3.5">
+              <div class="rounded-lg lg:rounded-3xl bg-d2 h-full max-h-[210px] lg:min-h-[250] overflow-hidden">
+                <img [src]="productDetails?.productId?.bannerImage ? constants.baseImageUrl + productDetails?.productId?.bannerImage : constants?.defaultProductImage" class="w-full h-full object-cover m-auto" alt="product_cover" />
+              </div>
+            </div>
+            <div class="w-full md:w-9/12 p-1 sm:p-2 lg:p-3.5">
+              <div class="space-y-2 lg:space-y-3 xl:space-y-4 pb-4 xl:pb-6">
+                <span class="block text-base sm:text-lg lg:text-xl xl:text-26 2xl:text-36 text-secondary font-medium">{{productDetails?.productId?.product_name | titlecase}}</span>
+                <p class="text-sm sm:text-base xl:text-lg text-d4" [innerHTML]="productDetails?.productId?.description"></p>
+                <div class="space-y-1">
+                  <div class="flex items-center" [ngClass]="isBetweenRating ? 'space-x-0' : 'space-x-2'">
+                    <div class="flex items-center space-x-1" *ngIf="productDetails?.averageRating > 0">
+                      <span *ngFor="let item of ratingArray">
+                        <span class="inline-block icon-star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="item?.ratting"></span>
+                        <span class="inline-block icon-unfill_star text-base xl:text-lg fotn-semibold text-ratting" *ngIf="!item?.ratting && !item?.isBetween"></span>
+                        <span class="block" *ngIf="item?.isBetween && !item?.ratting">
+                          <span class="inline-block icon-half-ratting text-base xl:text-lg fotn-semibold text-ratting"></span>
+                        </span>
+                      </span>
+                    </div>
+                    <span class="text-sm xl:text-base font-medium text-dark pt-0.5">{{productDetails?.averageRating}} out of 5</span>
+                  </div>
+                  <span class="text-14 md:text-base text-d4">{{productDetails?.totalRatings}} {{"Customers Reviews" | translate}}</span>
+                </div>
+                <div >
+                  <button class="btn_primary py-3 lg:py-3.5 w-fit text-center anim" (click)="addReview(productDetails._id)">{{"Write a product review" | translate}}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-full" *ngIf="isLoading">
+      <div class="animate-pulse flex flex-wrap pb-6 lg:pb-8 xl:pb-10 2xl:pb-12 -mx-5">
+        <div class="w-full p-5 space-y-8 lg:space-y-10 xl:space-y-14">
+          <div class="w-full flex flex-wrap xl:flex-nowrap">
+            <div class="w-3/12 space-y-2 md:space-y-5 p-1 sm:p-2 lg:p-3.5">
+              <div class="rounded-lg lg:rounded-3xl bg-d2 h-full max-h-[210px] lg:min-h-[250] overflow-hidden">
+                <img [src]="constants.defaultProductImage" class="aspect-square w-full h-full object-cover" alt="Default Image" />
+              </div>
+            </div>
+            <div class="w-9/12 p-1 sm:p-2 lg:p-3.5">
+              <div >
+                <span class="block w-1/3 text-base sm:text-lg lg:text-xl bg-gray-300 rounded-md font-medium">&nbsp;</span>
+                <span class="block w-2/3 text-sm bg-gray-300 rounded-md mt-2 lg:mt-3 xl:mt-4">&nbsp;</span>
+                <span class="block w-2/3 text-sm bg-gray-300 rounded-md mt-1.5 lg:mt-2">&nbsp;</span>
+              </div>
+              <div >
+                <button class="btn_primary py-3 lg:py-3.5 w-fit anim">{{"Write a product review" | translate}}</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-2xl sm:text-3xl md:text-36 lg:text-40 xl:text-48 font-bold text-secondary mb-5">{{"Overall Ratings & Reviews" | translate}}</p>
+    <div class="w-full">
+      <app-rettings-review [isProductDetailsPage]="false" [productId]="productId"></app-rettings-review>
+    </div>
+  </div>
+</section>

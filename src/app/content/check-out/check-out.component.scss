@@ -1,0 +1,21 @@
+::ng-deep .order_steps .mat-horizontal-stepper-header-container{
+  display: flex !important;
+}
+
+::ng-deep .mat-horizontal-stepper-header-container{
+  align-items: start !important;
+}
+
+::ng-deep .mat-step-header {
+  pointer-events: none;
+  cursor: default;
+}
+
+::ng-deep .mat-step-icon-state-edit {
+  background-color: #3E6227 !important;
+}
+
+::ng-deep .mat-step-icon-selected {
+  background-color: #3E6227 !important;
+}
+

@@ -1,0 +1,43 @@
+
+<div class="w-full">
+  <div class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+    <div class="relative wrapper text-center space-y-3.5 z-10">
+      <h1 class="h1">{{"Terms & Conditions" | translate}}</h1>
+      <div class="flex items-center justify-center space-x-2">
+        <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer" [routerLink]="'/home'">{{"Home" | translate}}</span>
+        <span class="icon-star text-14 text-secondary"></span>
+        <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Terms & Conditions" | translate}}</span>
+      </div>
+    </div>
+    <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover"/>
+  </div>
+  <section class="w-full py-12 md:py-14 lg:py-16 xl:py-20 2xl:py-24 relative overflow-hidden">
+    <div class="wrapper">
+      <ul class="w-full mb-5">
+        <li class="w-full relative before:absolute before:top-3 before:left-0 before:w-4 before:h-4 before:rounded-full before:bg-dark pl-10">
+          <span class="block text-base sm:text-lg md:text-xl lg:text-24 xl:text-26 font-semibold text-dark">{{"Last Updated" | translate}}</span>
+          <ul class="w-full space-y-3.5 mt-2.5 sm:mt-4 md:mt-5">
+            <li>
+              <span class="block text-sm md:text-base lg:text-lg text-d4">{{"Welcome to Magics Hair Care. By using our website and purchasing our products, you agree to comply with and be bound by the following terms and conditions. Please review these terms carefully. If you do not agree with these terms, you should not use our website or purchase our products." | translate}}</span>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="w-full bg-white rounded-lg space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-8 marker:text-base marker:sm:text-lg marker:md:text-xl marker:font-semibold marker:text-[#0D0E12]">
+        <li class="w-full relative pl-6 md:pl-10" *ngFor="let item of termsAndCondition;let i = index;">
+          <span class="block text-base sm:text-lg md:text-xl lg:text-24 xl:text-26 font-semibold text-dark">{{item?.title | translate}}</span>
+          <span class="block text-base sm:text-lg md:text-xl lg:text-24 xl:text-26 font-semibold text-dark absolute top-0 left-0">{{i+1}}.</span>
+          <ul class="w-full space-y-3.5 mt-2.5 sm:mt-4 md:mt-5">
+            <li *ngFor="let subItem of item?.description">
+              <span class="block text-sm md:text-base lg:text-lg text-d4">{{subItem?.value | translate}}</span>
+            </li>
+            <ul>
+              <li class="text-sm md:text-base lg:text-lg text-dark" *ngFor="let item of item?.contact_details">{{item?.detail | translate}}</li>
+              <li class="text-sm md:text-base lg:text-lg text-d4 mt-4" *ngIf="item?.note && item?.note != ''">{{item?.note | translate}}</li>
+            </ul>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,895 @@
+<div class="w-full px-4 pb-8">
+  <mat-stepper labelPosition="bottom" #stepper>
+    <mat-step>
+      <div class="space-y-5 xl:space-y-7">
+        <div class="flex items-center space-x-2">
+          <span>
+          </span>
+          <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"My Order" | translate}}</span>
+        </div>
+        <!-- order list  -->
+        <div  *ngIf="!isLoading" infiniteScroll [infiniteScrollDistance]="0.1" (scrolled)="onScroll()">
+          <div class="w-full space-y-6" *ngIf="orderList?.length > 0">
+            <div class="w-full rounded-2xl bg-d2 p-4" *ngFor="let item of orderList">
+              <div class="flex flex-wrap items-center -mx-2.5 cursor-pointer" (click)="orderDetails(item._id, stepper)">
+                <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+                  <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                    <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product" />
+                  </div>
+                </div>
+                <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+                  <ul class="space-y-1">
+                    <li class="flex items-center justify-between">
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Order Date" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{item?.orderAt |
+                        date:'dd/MM/yyyy'}}</span>
+                    </li>
+                    <li class="flex items-center justify-between">
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Order Id" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{item?.orderId}}</span>
+                    </li>
+                    <li class="flex items-center justify-between">
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Order Status" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]" 
+                        *ngIf="item?.fullfill_status === 'pending'">{{"Pending" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                        *ngIf="item?.fullfill_status === 'ready_to_ship'">{{"Rady To Ship" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                        *ngIf="item?.fullfill_status === 'in_replace'">{{"Replace in Progress" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                        *ngIf="item?.fullfill_status === 'shipped'">{{"Order Shipped" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                        *ngIf="item?.fullfill_status === 'replaceaccept'">{{"Replace Accept" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                        *ngIf="item?.fullfill_status === 'rto'">{{"Returned" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                        *ngIf="item?.fullfill_status === 'cancelled'">{{"Cancelled" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                        *ngIf="item?.fullfill_status === 'replacerejected'">{{"Replace Rejected" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                        *ngIf="item?.fullfill_status === 'delivered'"> {{"Delivered" | translate}}</span>
+                    </li>
+                    <li class="flex items-center justify-between">
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Quantity" | translate}}</span>
+                      <span
+                        class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{item?.total_quantity}}</span>
+                    </li>
+                    <li class="flex items-center justify-between">
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Total Amount" | translate}}</span>
+                      <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{item?.currency == 'INR' ? '₹ ' + item?.total_pay : '$ ' + item?.total_pay}}</span>
+                    </li>
+                    <li class="flex items-center justify-end">
+                      <span class="block text-xs md:text-sm lg:text-base font-semibold text-primary underline cursor-pointer" (click)="cancelOrder($event, item)" *ngIf="item?.fullfill_status == 'pending'">{{"Cancel Order" | translate}}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full bg-gray-400/30 rounded-xl shadow-lg p-7" *ngIf="orderList?.length == 0">
+            <span class="block text-base sm:text-lg lg:text-xl xl:text-2xl font-semibold text-dark text-center">{{"You don't have any placed order" | translate}}</span>
+          </div>
+        </div>
+        <div class="space-y-5" *ngIf="isLoading">
+          <div class="animate-pulse p-4 rounded-2xl bg-d2">
+            <div class="flex flex-wrap items-center -mx-2.5">
+              <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product" />
+                </div>
+              </div>
+              <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+                <ul class="space-y-1">
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Date</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Id</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Status</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Quantity</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Total amount</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="animate-pulse p-4 rounded-2xl bg-d2">
+            <div class="flex flex-wrap items-center -mx-2.5">
+              <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product" />
+                </div>
+              </div>
+              <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+                <ul class="space-y-1">
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Date</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Id</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Order Status</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Quantity</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">Total amount</span>
+                    <span
+                      class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-step>
+    <mat-step optional>
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2 cursor-pointer" (click)="backDetails(stepper)">
+          <span>
+            <svg width="26" height="20" viewBox="0 0 26 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <mask id="path-1-outside-1_64_63" maskUnits="userSpaceOnUse" x="0.440674" y="0.478516" width="25"
+                height="19" fill="black">
+                <rect fill="white" x="0.440674" y="0.478516" width="25" height="19" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                  d="M9.30005 18.2504C9.48755 18.4379 9.72505 18.5254 9.96255 18.5254C10.2 18.5254 10.4501 18.4379 10.6251 18.2504C10.9875 17.8879 10.9875 17.2879 10.6251 16.9254L4.63716 10.9375H23.625C24.1375 10.9375 24.5625 10.5125 24.5625 10C24.5625 9.4875 24.1375 9.0625 23.625 9.0625H4.63794L10.6251 3.07539C10.9875 2.71289 10.9875 2.11289 10.6251 1.75039C10.2626 1.38789 9.66255 1.38789 9.30005 1.75039L1.71255 9.33789C1.35005 9.70039 1.35005 10.3004 1.71255 10.6629L9.30005 18.2504Z" />
+              </mask>
+              <path fill-rule="evenodd" clip-rule="evenodd"
+                d="M9.30005 18.2504C9.48755 18.4379 9.72505 18.5254 9.96255 18.5254C10.2 18.5254 10.4501 18.4379 10.6251 18.2504C10.9875 17.8879 10.9875 17.2879 10.6251 16.9254L4.63716 10.9375H23.625C24.1375 10.9375 24.5625 10.5125 24.5625 10C24.5625 9.4875 24.1375 9.0625 23.625 9.0625H4.63794L10.6251 3.07539C10.9875 2.71289 10.9875 2.11289 10.6251 1.75039C10.2626 1.38789 9.66255 1.38789 9.30005 1.75039L1.71255 9.33789C1.35005 9.70039 1.35005 10.3004 1.71255 10.6629L9.30005 18.2504Z"
+                fill="#0F172A" />
+              <path
+                d="M9.30005 18.2504L8.9465 18.6039H8.9465L9.30005 18.2504ZM10.6251 18.2504L10.2715 17.8968L10.2654 17.9029L10.2595 17.9092L10.6251 18.2504ZM10.6251 16.9254L10.9786 16.5718V16.5718L10.6251 16.9254ZM4.63716 10.9375V10.4375H3.43005L4.28361 11.2911L4.63716 10.9375ZM4.63794 9.0625L4.28439 8.70895L3.43083 9.5625H4.63794V9.0625ZM10.6251 3.07539L10.9786 3.42894V3.42894L10.6251 3.07539ZM10.6251 1.75039L10.9786 1.39684L10.9786 1.39684L10.6251 1.75039ZM9.30005 1.75039L9.6536 2.10394V2.10394L9.30005 1.75039ZM1.71255 9.33789L2.0661 9.69144H2.0661L1.71255 9.33789ZM1.71255 10.6629L1.359 11.0164H1.359L1.71255 10.6629ZM9.96255 18.0254C9.8505 18.0254 9.74239 17.9856 9.6536 17.8968L8.9465 18.6039C9.23271 18.8902 9.5996 19.0254 9.96255 19.0254V18.0254ZM10.2595 17.9092C10.1943 17.9791 10.0854 18.0254 9.96255 18.0254V19.0254C10.3147 19.0254 10.7058 18.8966 10.9906 18.5915L10.2595 17.9092ZM10.2715 17.2789C10.4387 17.4462 10.4387 17.7296 10.2715 17.8968L10.9786 18.6039C11.5364 18.0462 11.5364 17.1296 10.9786 16.5718L10.2715 17.2789ZM4.28361 11.2911L10.2715 17.2789L10.9786 16.5718L4.99071 10.5839L4.28361 11.2911ZM23.625 10.4375H4.63716V11.4375H23.625V10.4375ZM24.0625 10C24.0625 10.2364 23.8614 10.4375 23.625 10.4375V11.4375C24.4137 11.4375 25.0625 10.7886 25.0625 10H24.0625ZM23.625 9.5625C23.8614 9.5625 24.0625 9.76364 24.0625 10H25.0625C25.0625 9.21136 24.4137 8.5625 23.625 8.5625V9.5625ZM4.63794 9.5625H23.625V8.5625H4.63794V9.5625ZM10.2715 2.72184L4.28439 8.70895L4.99149 9.41605L10.9786 3.42894L10.2715 2.72184ZM10.2715 2.10394C10.4387 2.27118 10.4387 2.5546 10.2715 2.72184L10.9786 3.42894C11.5364 2.87118 11.5364 1.9546 10.9786 1.39684L10.2715 2.10394ZM9.6536 2.10394C9.82084 1.93671 10.1043 1.93671 10.2715 2.10394L10.9786 1.39684C10.4208 0.839075 9.50426 0.839075 8.9465 1.39684L9.6536 2.10394ZM2.0661 9.69144L9.6536 2.10394L8.9465 1.39684L1.359 8.98434L2.0661 9.69144ZM2.0661 10.3093C1.89886 10.1421 1.89886 9.85868 2.0661 9.69144L1.359 8.98434C0.801233 9.5421 0.801233 10.4587 1.359 11.0164L2.0661 10.3093ZM9.6536 17.8968L2.0661 10.3093L1.359 11.0164L8.9465 18.6039L9.6536 17.8968Z"
+                fill="#0F172A" mask="url(#path-1-outside-1_64_63)" />
+            </svg>
+          </span>
+          <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Order Details" | translate}}</span>
+        </div>
+        <span class="text-xs md:text-sm lg:text-base font-medium text-secondary mb-0">{{"Order Id" | translate}}: <span class="font-bold text-primary">{{orderDetailList?.orderId}}</span> </span>
+      </div>
+      <!-- Order Details -->
+      <div class="p-4 rounded-2xl bg-d2 mt-4">
+        <div class="w-full" *ngIf="!isDisplayLoad">
+          <div class="flex flex-wrap lg:-mx-2.5">
+            <div class="w-full md:w-4/12 px-0 lg:px-2.5 p-2.5">
+              <div class="space-y-1 md:space-y-2">
+                <span class="block xl_titel font-medium">{{"Delivery address" | translate}}</span>
+                <span class="text-d4 text-sm xl:text-16 block font-medium">{{orderDetailList?.addressId?.building}}
+                  {{orderDetailList?.addressId?.sector}}, {{orderDetailList?.addressId?.land_mark}},
+                  {{orderDetailList?.addressId?.city}}, {{orderDetailList?.addressId?.state}} {{orderDetailList?.addressId?.pincode}}</span>
+                </div>
+            </div>
+            <div class="w-full md:w-8/12 px-0 lg:px-2.5 p-2.5">
+              <div class="w-full" *ngIf="orderDetailList?.delivery_type == 'Manual' || orderDetailList?.delivery_type == ''">
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'pending'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Placed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-l1 text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Rady To Ship" | translate}} </span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-l1 text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Order Shipped" | translate}}</span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-l1 text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Delivered" | translate}} <br> </span>
+                          <!-- <span class="text-primary">({{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}})</span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'ready_to_ship'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-l1 text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Order Shipped" | translate}}</span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-l1 text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Delivered" | translate}} <br> </span>
+                          <!-- <span class="text-primary">({{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}})</span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'shipped'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-l1 text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Delivered" | translate}} <br> </span>
+                          <!-- <span class="text-primary">({{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}})</span> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'delivered'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Delivered" | translate}} <br> 
+                          <span class="text-primary">({{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'rto'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-[#FF3B30]">{{"Retured" | translate}} <br> 
+                          <span class="text-[#FF3B30]">({{orderDetailList?.rtoAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'cancelled'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-transparent flex items-center justify-center mx-auto relative z-10">
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-transparent flex items-center justify-center mx-auto relative z-10">
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-[#FF3B30]">{{"Cancelled" | translate}} <br> 
+                          <span class="text-[#FF3B30]">({{orderDetailList?.cancelledAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'in_replace'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Replace in Progress" | translate}} <br> 
+                          <span class="text-primary">({{orderDetailList?.replaceAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'replaceaccept'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Replace Accepted" | translate}}<br> 
+                          <span class="text-primary">({{orderDetailList?.replaceAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="w-full px-0 lg:px-2.5 p-2.5" *ngIf="orderDetailList?.fullfill_status === 'replacerejected'">
+                  <div class="flex flex-wrap">
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-order-confirmed text-primary text-2xl"></span>
+                          </div>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Confirmed" | translate}} <br>
+                          <span class="text-primary">({{orderDetailList?.orderAt | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-shipped text-primary text-xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Rady To Ship" | translate}}<br>
+                          <span class="text-primary">({{orderDetailList?.ready_to_shipAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-transit text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-secondary">{{"Order Shipped" | translate}}<br>
+                          <span class="text-primary" >({{orderDetailList?.shippedAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                    <div class="w-1/4">
+                      <div class="w-full relative text-center">
+                        <div class="mb-1 relative">
+                          <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                            <span class="inline-block icon-delivered text-primary text-2xl"></span>
+                          </div>
+                          <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                        </div>
+                        <span class="text-xs lg:text-sm xl:text-16 block font-medium text-[#FF3B30]">{{"Replace Rejected" | translate}} <br> 
+                          <span class="text-[#FF3B30]">({{orderDetailList?.replaceAtTimestamp | date:'dd MMM yyyy'}})</span></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="w-full md:text-right" *ngIf="orderDetailList?.delivery_type == 'Shiprocket'">
+                <span class="xl_titel font-medium cursor-pointer inline-block" (click)="openOrderTracking(orderDetailList?._id)">{{"See all Tracking Upadates" | translate}} ></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 underline animate-pulse cursor-pointer" *ngIf="orderDetailList?.fullfill_status == 'replaceaccept'" (click)="orderDetails(orderDetailList.newreplaceorderid, stepper)">
+          <span class="bg-lime-600/10 rounded-md p-2 text-xs md:text-sm lg:text-base font-bold text-primary">{{"New Order Id" | translate}}: <span class="font-bold">{{orderDetailList?.newreplaceorder}}</span></span>
+        </div>
+        <div class="w-full animate-pulse" *ngIf="isDisplayLoad">
+          <div class="flex flex-wrap lg:-mx-2.5 ">
+            <div class="w-full lg:w-3/12 px-0 lg:px-2.5 p-2.5">
+              <div class="space-y-1 md:space-y-2">
+                <span class="block xl_titel font-medium">Delivery address</span>
+                <span class="block text-xs leading-[12px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <span class="block text-xs leading-[12px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                <span class="block text-xs leading-[12px] bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                </div>
+               
+            </div>
+            <div class="w-full lg:w-9/12 px-0 lg:px-2.5 p-2.5" >
+              <div class="flex flex-wrap">
+                <div class="w-1/4">
+                  <div class="w-full relative text-center">
+                    <div class="mb-1 relative">
+                      <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                        <span class="inline-block icon-order-confirmed text-l1 text-2xl"></span>
+                      </div>
+                    </div>
+                    <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">Order Placed </span>
+                  </div>
+                </div>
+                <div class="w-1/4">
+                  <div class="w-full relative text-center">
+                    <div class="mb-1 relative">
+                      <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                        <span class="inline-block icon-shipped text-l1 text-xl"></span>
+                      </div>
+                      <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                    </div>
+                    <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Rady To Ship" | translate}} </span>
+                  </div>
+                </div>
+                <div class="w-1/4">
+                  <div class="w-full relative text-center">
+                    <div class="mb-1 relative">
+                      <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                        <span class="inline-block icon-transit text-l1 text-2xl"></span>
+                      </div>
+                      <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                    </div>
+                    <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">{{"Order Shipped" | translate}}</span>
+                  </div>
+                </div>
+                <div class="w-1/4">
+                  <div class="w-full relative text-center">
+                    <div class="mb-1 relative">
+                      <div class="w-10 h-10 lg:w-12 lg:h-12 xl:w-14 xl:h-14 rounded-full bg-white shadow-three flex items-center justify-center mx-auto relative z-10">
+                        <span class="inline-block icon-delivered text-l1 text-2xl"></span>
+                      </div>
+                      <span class="block border-b border-dashed border-primary absolute w-full right-1/2 top-1/2 -translate-y-1/2"></span>
+                    </div>
+                    <span class="text-xs lg:text-sm xl:text-16 block font-medium text-l1">Delivered <br> </span>
+                      <!-- <span class="text-primary">({{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}})</span> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+           
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-2xl space-y-5 bg-d2 mt-5">
+        <div class="w-full" *ngIf="!isDisplayLoad">
+          <div class="flex flex-wrap items-center -mx-2.5 cursor-pointer" *ngFor="let order of orderDetailList.variants" (click)="viewProductDetails(order?.variantId?._id)">
+            <div class="w-full md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+              <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                <img [src]="order?.variantId?.productId?.bannerImage ? constants.baseImageUrl + order?.variantId?.productId?.bannerImage : constants.defaultProductImage"
+                  class="max-w-36 w-full aspect-square" alt="product" />
+              </div>
+            </div>
+            <div class="w-full md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+              <ul class="space-y-1">
+                <li class="flex items-center justify-between">
+                  <span class="w-auto block h3">{{order?.variantId?.productId?.product_name | titlecase}}</span>
+                  <span class="block xl_titel text-primary text-sm sm:text-base md:text-sm lg:text-base underline cursor-pointer" *ngIf="orderDetailList.fullfill_status == 'delivered' && !order?.variantId?.review" (click)="rateReview($event,order?.variantId?._id)">{{"Rate & Review Product" | translate}}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">{{"Quantity" | translate}}</span>
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-bold text-dark">{{order?.quantity}}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">{{"Size" | translate}}</span>
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-bold text-dark">{{order?.variantId?.sizeId?.size_name}}</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">{{"Total Amount" | translate}}</span>
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-bold text-dark">{{orderDetailList?.currency == 'INR' ? '₹ ' + order?.gross_amount : '$ ' + order?.gross_amount}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="w-full animate-pulse" *ngIf="isDisplayLoad">
+          <div class="flex flex-wrap items-center -mx-2.5 cursor-pointer" >
+            <div class="w-full md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+              <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                <img [src]="constants.defaultProductImage"
+                  class="max-w-36 w-full aspect-square" alt="product" />
+              </div>
+            </div>
+            <div class="w-full md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+              <ul class="space-y-1">
+                <li class="flex items-center justify-between">
+                  <h3 class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</h3>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">Quantity</span>
+                  <span class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">Size</span>
+                  <span class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="w-auto text-sm sm:text-base md:text-sm lg:text-base font-medium text-d4">Total Amount</span>
+                  <span class="w-full max-w-40 sm:max-w-48 md:max-w-56 lg:max-w-64 text-xs font-medium bg-gray-300 rounded-sm">&nbsp;&nbsp;</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-end space-x-3 lg:space-x-5 xl:space-x-7">
+          <span class="block xl_titel text-primary text-xs lg:text-sm py-0.5 md:py-0 underline cursor-pointer" *ngIf="orderDetailList.fullfill_status == 'shipped' || orderDetailList.fullfill_status == 'delivered'" (click)="downloadLabel(orderDetailList?.invoice_path)">{{"Get Invoice" | translate}}</span>
+          <span class="block xl_titel text-primary text-xs lg:text-sm py-0.5 md:py-0 underline cursor-pointer" *ngIf="orderDetailList.fullfill_status == 'delivered' && !orderDetailList?.replaceorder" (click)="replaceOrder($event, orderDetailList._id)">{{"Refund & Replace Order" | translate}}</span>
+        </div>
+        <span class="block my-8 border-b border-d1"></span>
+
+        <div class="w-full sm:p-3.5 space-y-5">
+          <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Summary" | translate}}</span>
+          <div class="w-full" *ngIf="!isDisplayLoad">
+            <div class="rounded-xl bg-white py-6 px-3.5 sm:px-7 xl:py-8 xl:px-9 shadow-three" >
+              <ul class="flex flex-wrap justify-between">
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-dark font-bold">{{"Sub Price" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-dark font-bold  text-right">{{orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_price : '$ ' + orderDetailList?.total_price}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5">{{"Discount" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right">{{orderDetailList?.total_discount_amount  ? (orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_discount_amount : '$ ' + orderDetailList?.total_discount_amount ) : 0}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5">{{"Gross Price" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right">{{ orderDetailList?.total_gross_amount ? (orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_gross_amount : '$ ' + orderDetailList?.total_gross_amount) : 0}}</li>
+                <!-- <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5">Included Tax(18%)</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right">{{orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_gst : '$ ' + orderDetailList?.total_gst}}</li> -->
+                <li class="w-full">
+                  <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                </li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-dark font-bold">{{"Price" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-dark font-bold text-right">{{orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_gross_amount : '$ ' + orderDetailList?.total_gross_amount}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5" *ngIf="orderDetailList?.use_coupon_code">{{"Coupon" | translate}} ({{orderDetailList?.use_coupon_code}})</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right" *ngIf="orderDetailList?.use_coupon_code">{{orderDetailList?.coupon_discount ? ( orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.coupon_discount : '$ ' + orderDetailList?.coupon_discount) : 0}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5" *ngIf="orderDetailList?.total_pscoupon_discount">{{"Add. Coupon" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right" *ngIf="orderDetailList?.total_pscoupon_discount">{{orderDetailList?.coupon_discount ? ( orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_pscoupon_discount : '$ ' + orderDetailList?.total_pscoupon_discount) : 0}}</li>
+                <!-- <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5">{{"Delivery Fee" | translate}}</li> -->
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5">{{"Shipping Charge" | translate}}</li>
+                <li class="w-1/2 text-sm sm:text-base lg:text-lg xl:text-xl text-d4 pt-2 sm:pt-3 xl:pt-5 text-right">₹ {{constants?.isShippingCharge || 0}}</li>
+              </ul>
+              <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+              <div class="flex justify-between">
+                <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{"Pay Price" | translate}}</span>
+                <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{orderDetailList?.currency == "INR" ? '₹ ' + orderDetailList?.total_pay : '$ ' + orderDetailList?.total_pay}}</span>
+              </div>
+              <span class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">{{"Delivery will take upto 5-7 business days" | translate}}</span>
+              <span class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4  block mt-3 xl:mt-5">{{"Expected Delivery Date" | translate}}: <span class="font-bold text-secondary">{{orderDetailList?.deliverAtTimestamp | date:'dd MMM yyyy'}}</span></span>
+            </div>
+          </div>
+          <div class="w-full animate-pulse" *ngIf="isDisplayLoad">
+            <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three" >
+              <ul class="space-y-1.5">
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Sub Price</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Discount</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Gross Price</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Included Tax(18%)</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="w-full">
+                  <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Price</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Coupon</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+                <li class="flex items-center justify-between">
+                  <span class="text-base lg:text-lg xl:text-xl text-l1 font-bold">Delivery Fee</span>
+                  <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+                </li>
+              </ul>
+              <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+              <div class="flex justify-between">
+                <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">Pay Price</span>
+                <span class="w-40 text-base bg-gray-300 rounded-md">&nbsp;&nbsp;</span>
+              </div>
+              <span class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">Delivery
+                will take upto 5-7 business days</span>
+              <span class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4  block mt-3 xl:mt-5">Expected Delivery Date: 
+                <span class="text-base bg-gray-300 rounded-md pl-24">&nbsp;&nbsp;</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>
+<!-- Cancel Order  -->
+<div class="fixed top-0 left-0 w-full h-screen z-[9998] flex items-center justify-center" *ngIf="isOpenCancelOrderForm">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none" (click)="isOpenCancelOrderForm = !isOpenCancelOrderForm" *ngIf="isOpenCancelOrderForm"></span>
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <div class="w-full max-w-[500px] md:min-w-[500px] rounded-2xl bg-d2 px-6 xl:px-8 py-10 xl:py-12">
+      <div class="flex items-center justify-between">
+        <span class="text-xl xl:text-24 text-secondary font-bold">{{"Cancel Order" | translate}}</span>
+        <a href="#"><span class="icon-close text-14"></span></a>
+      </div>
+      <div class="my-6 lg:my-8">
+        <div class="relative pb-5 space-y-2 md:space-y-0">
+          <span class="block xl_titel font-medium">{{"Reason" | translate}}</span>
+          <input class="w-full p-3 lg:p-4 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" [(ngModel)]="cancelOrderforReason" placeholder="What's Most Important To Know?" type="text" name="titel" id="titel">
+          <span class="absolute bottom-0 left-0 text-xs text-red-600 font-semibold" *ngIf="isCancelOrderError">*please enter reason for cancel order</span>
+        </div>
+        <div class="relative pb-5 space-y-2 md:space-y-0">
+          <span class="block xl_titel font-medium">{{"Message" | translate}}</span>
+          <textarea class="w-full h-20 md:h-24 lg:h-28 xl:h-36 p-3 lg:p-4 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base resize-none"  [(ngModel)]="cancelOrderforMessage" placeholder="Enter your message" name="description" id="description" rows="3"></textarea>
+          <span class="absolute bottom-0 left-0 text-xs text-red-600 font-semibold" *ngIf="isCancelOrderError">*please enter message for cancel order</span>
+        </div>
+      </div>
+      <div class="flex space-x-5">
+        <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5 bg-transparent text-primary hover:text-white hover:bg-primary" (click)="isOpenCancelOrderForm = !isOpenCancelOrderForm" >{{"Cancel" | translate}}</button>
+        <button class="btn_primary text-sm px-2 lg:px-5 sm:text-base anim w-1/2 py-3 xl:py-3.5" (click)="createCancelOrder()">{{"Cancel Order" | translate}}</button>
+      </div>
+    </div>
+  </div>
+</div>

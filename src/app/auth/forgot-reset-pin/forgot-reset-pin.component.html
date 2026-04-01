@@ -1,0 +1,33 @@
+<div class="bg-d2 w-full max-w-[500px] md:min-w-[500px] rounded-3xl">
+  <div class="relative z-10 px-5 lg:px-6 xl:px-7 py-5 md:py-8 lg:py-10 xl:py-12">
+    <div class="text-18 lg:text-24 font-bold text-secondary pb-5 lg:pb-6 xl:pb-7">{{isForgetPin ? 'Reset' : 'Create'}} {{"Pin(forgot pin)" | translate}}</div>
+    <form #setNewPinForm="ngForm" [formGroup]="setPinForm" class="w-full">
+      <div class="w-full relative pb-5">
+        <span class="inline-block text-16 lg:text-18 font-medium text-secondary">{{isForgetPin ? 'Reset New' : 'Create new'}} {{"Pin" | translate}}</span>
+        <div class="relative">
+          <input [type]="hidePin ? 'password' : 'text'" [formControlName]="'newPin'" placeholder="Re-Enter 4 Digit Pin"  class="w-full bg-white text-16 text-d5 font-medium px-4 lg:px-5 py-3 lg:py-4 rounded-[10px] border border-d1 focus:outline-none focus:shadow-outline pr-14" />
+          <span class="absolute right-5 top-1/2 -translate-y-1/2 text-lg md:text-xl lg:text-24 leading-10 text-d5 cursor-pointer" [ngClass]="hidePin ? 'icon-eye' : 'icon-close-eye'" (click)="hidePin = !hidePin"></span>
+        </div>
+        <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="setPinForm.controls['newPin'].value && (setPinForm.controls['newPin'].touched && setPinForm.controls['newPin'].invalid)">*{{"Please enter valid PIN." | translate}}</span>
+        <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="!setPinForm.controls['newPin'].value && setPinForm.controls['newPin'].hasError('required') && setPinForm.controls['newPin'].touched">*{{"Please enter PIN." | translate}}</span>
+      </div>
+    <div class="w-full relative pb-5">
+        <span class="inline-block text-16 lg:text-18 font-medium text-secondary">{{"Confirm Pin" | translate}}</span>
+        <div class="relative">
+            <input [type]="hideConfrimPin ? 'password' : 'text'" [formControlName]="'confrimPin'" name="cPin" id="cPin"  placeholder="Re-Enter 4 Digit Pin" class="w-full bg-white text-16 text-d5 font-medium px-4 lg:px-5 py-3 lg:py-4 rounded-[10px] border border-d1 focus:outline-none focus:shadow-outline pr-14" />
+            <span class="absolute right-5 top-1/2 -translate-y-1/2 text-24 leading-10 text-secondary cursor-pointe" [ngClass]="hideConfrimPin ? 'icon-eye' : 'icon-close-eye'" (click)="hideConfrimPin = !hideConfrimPin"></span>
+        </div>
+        <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="setPinForm.controls['confrimPin'].value && (setPinForm.controls['confrimPin'].touched && setPinForm.controls['confrimPin'].invalid)">*{{"Please enter valid Confirm PIN." | translate}}</span>
+        <span class="error-message text-red-500 block absolute bottom-0 left-0 text-sm font-semibold" *ngIf="!setPinForm.controls['confrimPin'].value && setPinForm.controls['confrimPin'].hasError('required') && setPinForm.controls['confrimPin'].touched">*{{"Please enter Confirm PIN." | translate}}</span>
+      </div>
+      <div class="w-full pt-5">
+        <button type="submit" class="w-full flex items-center justify-center border-2 border-primary rounded-lg px-3.5 lg:px-6 xl:px-10 py-3 xl:py-4 outline-none bg-primary hover:bg-white anim group" (click)="setPin()">
+          <span class="text-16 text-white group-hover:text-primary anim anim">{{isForgetPin ? 'Reset' : 'Create'}} {{"Pin" | translate}}</span>
+          <span class="block" *ngIf="isBtnLoading">
+            <svg class="animate-spin -mr-1 ml-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"> <circle class="opacity-25 stroke-white group-hover:stroke-primary anim" cx="12" cy="12" r="10" stroke-width="4"></circle> <path class="opacity-75 fill-white group-hover:fill-primary anim" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path> </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,115 @@
+<div class="bg-d2 w-full max-w-[500px] md:min-w-[500px] rounded-3xl">
+  <div class="relative z-10 px-5 lg:px-6 xl:px-7 py-5 md:py-8 lg:py-10 xl:py-12">
+    <!-- <div class="text-18 lg:text-24 font-bold text-secondary pb-5 lg:pb-6 xl:pb-7">Sign Up</div> -->
+    <div class="flex items-center justify-between pb-5 lg:pb-6 xl:pb-7">
+      <div class="text-18 lg:text-24 font-bold text-secondary">{{"Sign Up" | translate}}</div>
+      <span class="icon-close text-xl rounded-full border border-d2 text-secondary cursor-pointer" *ngIf="isUnknowUser" (click)="closeDialog()"></span>
+    </div>
+    <form #registerNgForm="ngForm" method="post" [formGroup]="registerForm">
+      <div class="w-16 h-16 rounded-full bg-white shadow-one border border-black/20 mx-auto relative">
+        <img [src]="profileImage ? constents.baseImageUrl + profileImage : constents?.defaultImage" alt="User" class="w-full h-full rounded-full object-cover object-top" />
+        <div class="absolute right-0 bottom-0 w-6 h-6 border border-d1 bg-white rounded-full flex items-center justify-center">
+          <span class="icon-edit-profile text-[12px] text-secondary text-center cursor-pointer"></span>
+          <span class="hidden icon-edit text-[12px] text-secondary text-center cursor-pointer"></span>
+          <input type="file" class="absolute inset-0 w-full h-full opacity-0 z-10" name="upload" id="upload" (change)="uploadImage($event)"/>
+        </div>
+      </div>
+      <span class="block text-16 text-secondary font-medium text-center pt-2">{{"Upload Profile Photo" | translate}}</span>
+      <div class="space-y-2.5 xl:space-y-3">
+        <div class="w-full relative">
+          <span class="inline-block text-14 lg:text-16 font-medium text-secondary mb-2.5">{{"Full Name" | translate}}</span>
+          <input class="w-full bg-white text-16 text-d5 font-medium px-4 lg:px-5 py-2 lg:py-3 rounded-[10px] border border-d1 focus:outline-none focus:shadow-outline"
+            type="text" placeholder="Enter your Full name" formControlName="fullname" />
+          <span class="error-message text-red-500 block absolute top-full left-0 text-xs font-semibold" *ngIf="registerForm.get('fullname').invalid && registerForm.get('fullname').dirty && registerForm.get('fullname').touched">
+            <span *ngIf="registerForm.get('fullname')?.errors?.['required']">{{"Name is required." | translate}}</span>
+            <span *ngIf="registerForm.get('fullname')?.errors?.['pattern']">{{"Please enter valid Full name." | translate}}</span>
+          </span>
+        </div>
+        <div class="w-full relative">
+          <span class="inline-block text-14 lg:text-16 font-medium text-secondary mb-2.5">{{"Email" | translate}}</span>
+          <input class="w-full bg-white text-16 text-d5 font-medium px-4 lg:px-5 py-2 lg:py-3 rounded-[10px] border border-d1 focus:outline-none focus:shadow-outline"
+          type="text" placeholder="Lorem123@gmail.com" formControlName="email" />
+          <span class="error-message text-red-500 block absolute top-full left-0 text-xs font-semibold" *ngIf="registerForm.get('email').invalid && registerForm.get('email').dirty && registerForm.get('email').touched">
+            <span *ngIf="registerForm.get('email')?.errors?.['required']">{{"Email is required." | translate}}</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['pattern']">{{"Please enter valid Email." | translate}}</span>
+          </span>
+        </div>
+        <div class="relative loginTel" #phoneF="ngForm" [formGroup]="phoneForm">
+          <label class="block text-14 lg:text-16 font-medium pb-2.5">{{"Mobile Number" | translate}}</label>
+          <ngx-intl-tel-input
+          [cssClass]="'block w-full'"
+          [ngClass]="{'tel-invalid' : ((phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)) || (!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched))}"
+          [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone"></ngx-intl-tel-input>
+          <span class="error-message text-red-500 block absolute top-full left-[125px] text-xs font-semibold" *ngIf="phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)"> {{"Please enter valid Contact Number." | translate}}</span>
+          <span class="error-message text-red-500 block absolute top-full left-[125px] text-xs font-semibold" *ngIf="!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched"> {{"Please enter Contact Number." | translate}}</span>
+        </div>
+        <div class="currency-dropdown">
+          <label class="block text-14 lg:text-16 font-medium pb-2.5">{{"Currency" | translate}}</label>            
+          <mat-form-field>
+            <mat-label>{{"Select Currency" | translate}}</mat-label>
+            <mat-select [(ngModel)]="selectedValue" name="food" formControlName="currency">
+              <mat-option [value]="'INR'">
+                <div class="flex items-center space-x-3.5">
+                  <span class="inline-block">
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M11.2497 0C11.7494 0 12.2498 0 12.7495 0C12.8097 0.0131497 12.8692 0.0338134 12.9299 0.0381967C14.741 0.17345 16.4425 0.681278 18.0006 1.6124C21.1794 3.51159 23.1314 6.28366 23.8159 9.93113C23.8979 10.3663 23.9393 10.8097 24 11.2492C24 11.7489 24 12.2492 24 12.7489C23.9649 13.0345 23.9355 13.3212 23.8942 13.6055C23.489 16.4283 22.2747 18.8479 20.1686 20.7702C17.132 23.5442 13.5518 24.5329 9.52314 23.7301C6.62301 23.1522 4.26583 21.6281 2.47227 19.2799C0.460783 16.6462 -0.310749 13.6575 0.111965 10.3776C0.420703 7.98373 1.39827 5.87289 3.00333 4.06763C4.86765 1.97057 7.18413 0.663745 9.95525 0.180965C10.3842 0.10645 10.8182 0.0594866 11.2497 0ZM12.6049 10.0244C12.5573 10.1215 12.5291 10.1916 12.4897 10.2555C12.0219 11.0107 11.3392 11.4108 10.4544 11.4302C9.58013 11.449 8.70464 11.4402 7.83041 11.4327C7.372 11.4289 7.01692 11.5955 6.82842 12.0207C6.63992 12.4459 6.75265 12.8228 7.06451 13.1578C8.85244 15.0783 10.636 17.0032 12.4239 18.9236C12.8285 19.3582 13.4359 19.3845 13.8442 18.9994C14.2538 18.6124 14.2588 18.0144 13.8524 17.5755C12.8166 16.459 11.7795 15.3438 10.7431 14.2279C10.5007 13.9668 10.2596 13.7051 9.99408 13.417C12.4032 13.4196 13.9726 12.3137 14.7047 10.0238C15.1994 10.0238 15.7067 10.0294 16.2133 10.0226C16.7581 10.015 17.1846 9.61366 17.2078 9.09957C17.2341 8.51159 16.812 8.06388 16.2208 8.05887C15.7085 8.05449 15.1957 8.05824 14.7272 8.05824C14.5193 7.57045 14.3283 7.12211 14.1323 6.66187C14.1968 6.65874 14.2713 6.65248 14.3465 6.65248C14.9871 6.65185 15.6271 6.65373 16.2678 6.65123C16.8796 6.64872 17.3149 6.23169 17.3105 5.65749C17.3061 5.0908 16.8777 4.68567 16.2747 4.68567C13.4553 4.68504 10.6354 4.68504 7.81601 4.68629C7.72332 4.68629 7.62751 4.69068 7.53795 4.71322C7.03946 4.83657 6.73448 5.29243 6.79774 5.80902C6.85535 6.2774 7.27243 6.64622 7.77405 6.64998C8.68774 6.65749 9.60205 6.63432 10.5151 6.65937C11.4038 6.68379 12.0682 7.11773 12.5185 7.88104C12.5466 7.92925 12.5592 7.98686 12.5861 8.05824C12.4709 8.05824 12.3851 8.05824 12.2999 8.05824C11.105 8.05824 9.90954 8.04635 8.71529 8.06889C8.49047 8.07327 8.23747 8.1672 8.05147 8.29682C7.70955 8.53539 7.61185 8.97997 7.75025 9.37008C7.89116 9.76645 8.25939 10.0226 8.71153 10.0238C9.91455 10.0269 11.1169 10.0251 12.3199 10.0251C12.4032 10.0244 12.4872 10.0244 12.6049 10.0244Z" fill="#3E6227"/>
+                    </svg>
+                  </span>
+                  <span class="text-base font-medium text-dark">{{'Indian Rupee'}}</span>
+                </div>
+              </mat-option>
+              <mat-option [value]="'USD'">
+                <div class="flex items-center space-x-3.5">
+                  <span class="inline-block">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M12.7044 24C12.2345 24 11.7675 24 11.2975 24C11.2366 23.9855 11.1786 23.9652 11.1177 23.9623C9.44395 23.8492 7.85142 23.417 6.38944 22.5991C2.44439 20.3889 0.300725 17.0157 0.0222512 12.4997C-0.111184 10.336 0.35584 8.26505 1.41462 6.37106C3.6163 2.43514 6.9928 0.300412 11.4977 0.0219689C13.6617 -0.111452 15.727 0.364222 17.6299 1.41129C21.0122 3.27338 23.0834 6.11292 23.8114 9.91251C23.8985 10.3708 23.9391 10.8349 24 11.2989C24 11.7688 24 12.2358 24 12.7056C23.9855 12.7724 23.9652 12.8391 23.9594 12.9087C23.8434 14.5822 23.3995 16.1688 22.5902 17.6335C20.7221 21.0125 17.8881 23.0835 14.091 23.8115C13.6327 23.8985 13.1656 23.9391 12.7044 24ZM12.7276 17.3986C13.1714 17.239 13.6124 17.1201 14.0156 16.9258C15.8953 16.0209 16.1911 14.037 15.5124 12.6766C15.2194 12.0878 14.7233 11.6818 14.149 11.4004C13.4789 11.0727 12.774 10.8116 12.0952 10.5013C11.7704 10.3534 11.4455 10.1852 11.167 9.96472C10.6507 9.55865 10.729 8.88285 11.3149 8.5841C11.5238 8.47678 11.7704 8.41588 12.0053 8.39267C12.7044 8.32306 13.389 8.43328 14.0591 8.64211C14.5522 8.79583 14.9264 8.5812 15.0656 8.08812C15.1091 7.9315 15.1556 7.77198 15.1846 7.61245C15.2658 7.17448 15.0656 6.83223 14.6392 6.71041C14.3491 6.6263 14.0504 6.55959 13.7516 6.51028C13.4412 6.45807 13.125 6.43197 12.8001 6.39136C12.8001 6.0143 12.8059 5.65465 12.7972 5.29789C12.7914 5.00784 12.6522 4.86862 12.365 4.85992C12.1011 4.85122 11.8342 4.85122 11.5673 4.85992C11.2511 4.86862 11.1061 5.01945 11.1003 5.3472C11.0974 5.68365 11.0945 6.0201 11.1032 6.35365C11.1061 6.48417 11.0655 6.53928 10.9349 6.57989C10.5868 6.68721 10.2272 6.78002 9.90227 6.94245C8.86379 7.46163 8.23433 8.28535 8.16181 9.47164C8.08639 10.6927 8.67814 11.56 9.71082 12.1169C10.3258 12.4475 10.9988 12.665 11.6311 12.9638C12.043 13.1581 12.4752 13.3524 12.8204 13.6396C13.3687 14.0979 13.2294 14.8839 12.5913 15.2116C12.2113 15.406 11.8023 15.4379 11.3846 15.435C10.6826 15.4292 10.0125 15.2638 9.35112 15.0376C8.8899 14.881 8.49249 15.0898 8.35616 15.5423C8.29814 15.7366 8.24593 15.9338 8.20822 16.1311C8.1299 16.5371 8.30975 16.8852 8.69265 17.0041C9.11616 17.1375 9.54547 17.2477 9.98059 17.3406C10.32 17.4131 10.6681 17.4392 11.022 17.4856C11.022 17.8888 11.0191 18.2716 11.022 18.6516C11.0278 18.9561 11.1583 19.0953 11.4658 19.1098C11.7065 19.1214 11.9502 19.1127 12.191 19.1127C12.6029 19.1098 12.7247 18.9909 12.7247 18.5849C12.7276 18.1788 12.7276 17.7756 12.7276 17.3986Z" fill="#3E6227"/>
+                      <path d="M12.728 17.3985C12.728 17.7756 12.7309 18.1816 12.728 18.5877C12.7251 18.9937 12.6062 19.1127 12.1943 19.1156C11.9535 19.1185 11.7099 19.1243 11.4691 19.1127C11.1616 19.1011 11.0311 18.9618 11.0253 18.6544C11.0195 18.2715 11.0253 17.8916 11.0253 17.4884C10.6714 17.442 10.3233 17.4159 9.98391 17.3434C9.54879 17.2535 9.11948 17.1404 8.69597 17.0069C8.31307 16.8851 8.13322 16.54 8.21154 16.1339C8.24925 15.9338 8.30146 15.7394 8.35948 15.5451C8.49581 15.0926 8.89322 14.8838 9.35444 15.0404C10.0158 15.2638 10.6859 15.432 11.3879 15.4378C11.8056 15.4407 12.2146 15.4088 12.5946 15.2145C13.2299 14.8896 13.372 14.1007 12.8238 13.6424C12.4786 13.3553 12.0464 13.1609 11.6344 12.9666C11.0021 12.6679 10.3262 12.4532 9.71414 12.1197C8.68146 11.5599 8.08971 10.6956 8.16513 9.47447C8.23765 8.28818 8.86711 7.46445 9.90559 6.94527C10.2305 6.78285 10.5902 6.68713 10.9383 6.58272C11.0688 6.54211 11.1094 6.487 11.1065 6.35648C11.0978 6.02003 11.1007 5.68358 11.1036 5.35002C11.1065 5.02517 11.2515 4.87145 11.5706 4.86275C11.8346 4.85695 12.1015 4.85695 12.3683 4.86275C12.6555 4.87145 12.7948 5.01067 12.8006 5.30072C12.8064 5.66037 12.8035 6.01713 12.8035 6.39419C13.1254 6.43189 13.4445 6.458 13.7549 6.51311C14.0537 6.56531 14.3525 6.62912 14.6425 6.71324C15.069 6.83506 15.2691 7.17731 15.1879 7.61528C15.1589 7.7748 15.1125 7.93433 15.069 8.09095C14.9297 8.58403 14.5555 8.79866 14.0624 8.64494C13.3923 8.4361 12.7077 8.32589 12.0086 8.3955C11.7737 8.4187 11.5271 8.47961 11.3183 8.58693C10.7323 8.88567 10.654 9.56148 11.1703 9.96754C11.4488 10.1851 11.7737 10.3533 12.0986 10.5041C12.7773 10.8174 13.4822 11.0755 14.1523 11.4033C14.7267 11.6846 15.2198 12.0878 15.5157 12.6795C16.1945 14.0398 15.8986 16.0237 14.0189 16.9286C13.6128 17.1201 13.1719 17.2361 12.728 17.3985Z" fill="#F8FAFC"/>
+                      </svg>
+                  </span>
+                  <span class="text-base font-medium text-dark">{{'US Dollor'}}</span>
+                </div>
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div>
+          <label for="gender" class="block text-14 lg:text-16 font-medium">{{"Gender" | translate}}</label>
+          <!-- <input type="text" class="w-full text-base font-medium text-dark block bg-white border border-l1 rounded-lg outline-none px-5 py-3 mt-2.5"> -->
+          <mat-radio-group aria-labelledby="example-radio-group-label space-x-2" class="example-radio-group" formControlName="gender">
+            @for (season of seasons; track season) {
+              <mat-radio-button class="example-radio-button text-14 lg:text-16" [value]="season">{{season | titlecase}}</mat-radio-button>
+            }
+          </mat-radio-group>
+        </div>
+      </div>
+      <button class="inline-block w-full btn_primary text-sm px-3.5 lg:px-6 xl:px-10 lg:text-base anim py-2.5 xl:py-3 mt-2.5 xl:mt-3" (click)="signUp()">{{"Sign Up" | translate}}</button>
+      <div class="mt-2 flex flex-wrap items-center justify-center sm:space-x-1">
+        <div class="w-max p-1">
+          <div id="googleSignInButton"></div>
+        </div>
+        <div class="w-max p-1">
+          <button class="bg-white border-[1px] border-gray-500/20 rounded-full py-2.5 px-2.5 flex items-center justify-center w-full" (click)="loginWithFacebook()"> 
+            <span class="block mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" x="0" y="0" viewBox="0 0 112.196 112.196" style="enable-background:new 0 0 512 512" xml:space="preserve" ><g><circle cx="56.098" cy="56.098" r="56.098" style="" fill="#3b5998" data-original="#3b5998"></circle><path d="M70.201 58.294h-10.01v36.672H45.025V58.294h-7.213V45.406h7.213v-8.34c0-5.964 2.833-15.303 15.301-15.303l11.234.047v12.51h-8.151c-1.337 0-3.217.668-3.217 3.513v7.585h11.334l-1.325 12.876z" fill="#ffffff" data-original="#ffffff"></path></g></svg>
+            </span>
+            <span class="inline-block text-dark text-sm">Sign in with Facebook</span>
+          </button>
+        </div>
+        <div class="w-max p-1">
+          <button (click)="signInWithApple()" class="bg-white border-[1px] border-gray-500/20 rounded-full py-2.5 px-2.5 flex items-center justify-center w-full"> 
+            <span class="block mr-2">
+              <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" x="0" y="0" viewBox="0 0 22.773 22.773" style="enable-background:new 0 0 512 512" xml:space="preserve"><g><path d="M15.769 0h.162c.13 1.606-.483 2.806-1.228 3.675-.731.863-1.732 1.7-3.351 1.573-.108-1.583.506-2.694 1.25-3.561C13.292.879 14.557.16 15.769 0zM20.67 16.716v.045c-.455 1.378-1.104 2.559-1.896 3.655-.723.995-1.609 2.334-3.191 2.334-1.367 0-2.275-.879-3.676-.903-1.482-.024-2.297.735-3.652.926h-.462c-.995-.144-1.798-.932-2.383-1.642-1.725-2.098-3.058-4.808-3.306-8.276v-1.019c.105-2.482 1.311-4.5 2.914-5.478.846-.52 2.009-.963 3.304-.765.555.086 1.122.276 1.619.464.471.181 1.06.502 1.618.485.378-.011.754-.208 1.135-.347 1.116-.403 2.21-.865 3.652-.648 1.733.262 2.963 1.032 3.723 2.22-1.466.933-2.625 2.339-2.427 4.74.176 2.181 1.444 3.457 3.028 4.209z" fill="#000000" opacity="1" data-original="#000000"></path></g></svg>
+            </span>
+            <span class="inline-block text-dark text-sm">Sign in with Apple</span>
+          </button>
+        </div>
+      </div>
+      <div class="text-center pt-2.5 xl:pt-3">
+        <div class="text-14 text-secondary font-normal">{{"Already have an account" | translate}}
+          <span class="underline text-primary cursor-pointer" (click)="loginUser()">{{"Sign In" | translate}}?</span>
+        </div>
+        <!-- <span class="underline whitespace-nowrap text-primary text-16 font-normal cursor-pointer" [routerLink]="'/home'">Go to site</span> -->
+      </div>
+    </form>
+  </div>
+</div>

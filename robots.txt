@@ -1,0 +1,19 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /cart/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /login/
+Disallow: /register/
+Disallow: /api.magicshaircare.com/
+Disallow: /api.magicshaircare.com/user/product/pricerange/
+Disallow: /api.magicshaircare.com/user/gallary/
+Disallow: /api.magicshaircare.com/user/customerreview/
+Disallow: /api.magicshaircare.com/user/story/
+Disallow: /api.magicshaircare.com/user/productbenefits/landing/
+Disallow: /api.magicshaircare.com/user/advertisings/
+Disallow: /api.magicshaircare.com/user/productbenefits/
+Disallow: /user/
+
+Allow:
+Sitemap: https://magicshaircare.com/sitemap.xml

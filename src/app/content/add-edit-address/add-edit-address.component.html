@@ -1,0 +1,101 @@
+<div class="p-5 bg-d2 rounded-md">
+  <form  [formGroup]="addressForm" class="flex flex-wrap -mx-1.5 sm:-mx-2.5">
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Full Name" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+      <input [formControlName]="'fullname'" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="Enter your name" type="text" name="titel" id="titel">      
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('fullname')?.invalid && addressForm.get('fullname')?.dirty && addressForm.get('fullname')?.touched">
+        <span *ngIf="addressForm.get('fullname')?.errors?.['required']">Full Name is required.</span>
+        <span *ngIf="addressForm.get('fullname')?.errors?.['pattern']">Please enter valid Full name.</span>
+      </span>
+    </div>    
+    <div class="loginTel relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5" #phoneF="ngForm" [formGroup]="phoneForm">
+      <label class="xl_titel block">{{"Mobile Number" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></label>
+      <div >
+        <ngx-intl-tel-input
+        [cssClass]="'block w-full'"
+        [ngClass]="{'tel-invalid' : ((phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)) || (!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched))}"
+        [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone"></ngx-intl-tel-input>
+        <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)"> Please enter valid Contact Number.</span>
+        <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched"> Please enter Contact Number.</span>
+      </div>
+    </div>
+    <div class="loginTel relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5" #alternatePhoneF="ngForm" [formGroup]="alternatePhoneForm">
+      <label class="xl_titel block">{{"Alternate Mobile Number" | translate}}</label>
+      <div >
+        <ngx-intl-tel-input
+        [cssClass]="'block w-full'"
+        [ngClass]="{'tel-invalid' : ((alternatePhoneF.form.controls['alternate_phone'].value && (alternatePhoneF.form.controls['alternate_phone'].touched && alternatePhoneF.form.controls['alternate_phone'].invalid)) || (!alternatePhoneF.form.controls['alternate_phone'].value && alternatePhoneF.form.controls['alternate_phone'].hasError('required') && alternatePhoneF.form.controls['alternate_phone'].touched))}"
+        [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="alternate_phone" formControlName="alternate_phone">
+        </ngx-intl-tel-input>
+        <!-- <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="alternatePhoneF.form.controls['alternate_phone'].value && (alternatePhoneF.form.controls['alternate_phone'].touched && alternatePhoneF.form.controls['alternate_phone'].invalid)"> Please enter valid Contact Number.</span>
+        <span class="error-message text-red-500 block absolute bottom-0 left-[125px] text-sm font-semibold" *ngIf="!alternatePhoneF.form.controls['alternate_phone'].value && alternatePhoneF.form.controls['alternate_phone'].hasError('required') && alternatePhoneF.form.controls['alternate_phone'].touched"> Please enter Contact Number.</span>  -->
+      </div>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Flat/House No/Apartment/Company" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+        <input [formControlName]="'building'" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="Enter flat name or number" type="text" name="titel" id="titel">        
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('building')?.invalid && addressForm.get('building')?.dirty && addressForm.get('building')?.touched">
+        <span *ngIf="addressForm.get('building')?.errors?.['required']">Building is required.</span>
+        <span *ngIf="addressForm.get('building')?.errors?.['pattern']">Please enter valid building name.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Area, Street" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+        <input [formControlName]="'sector'" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="Enter area, street name" type="text" name="titel" id="titel">        
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('sector')?.invalid && addressForm.get('sector')?.dirty && addressForm.get('sector')?.touched">
+        <span *ngIf="addressForm.get('sector')?.errors?.['required']">Sector is required.</span>
+        <span *ngIf="addressForm.get('sector')?.errors?.['pattern']">Please enter valid sector name.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Pincode" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+        <input [formControlName]="'pincode'" (keyup)="getPincode($event)" maxlength="6" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="Enter pincode" type="number" name="titel" id="titel">        
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('pincode')?.invalid && addressForm.get('pincode')?.dirty && addressForm.get('pincode')?.touched">
+        <span *ngIf="addressForm.get('pincode')?.errors?.['required']">Pincode is required.</span>
+        <span *ngIf="addressForm.get('pincode')?.errors?.['pattern']">Please enter valid pincode.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Town/City" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+        <input [formControlName]="'city'" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base"[readonly]="true" placeholder="Town, city name" type="text" name="titel" id="titel">        
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('city')?.invalid && addressForm.get('city')?.dirty && addressForm.get('city')?.touched">
+        <span *ngIf="addressForm.get('city')?.errors?.['required']">City is required.</span>
+        <span *ngIf="addressForm.get('city')?.errors?.['pattern']">Please enter valid city.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Province" | translate}}<span class="text-red_1 text-[18] font-bold">&nbsp;*</span></span>
+      <input [formControlName]="'state'" type="text" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" [readonly]="true"  placeholder="State name" name="state" id="state"/>      
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('state')?.invalid && addressForm.get('state')?.dirty && addressForm.get('state')?.touched">
+        <span *ngIf="addressForm.get('state')?.errors?.['required']">State is required.</span>
+        <span *ngIf="addressForm.get('state')?.errors?.['pattern']">Please enter valid state.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Landmark" | translate}}</span>
+      <input [formControlName]="'land_mark'" class="w-full p-3 lg:py-3 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base" placeholder="Enter landmark name" type="text" name="titel" id="titel">      
+      <span class="absolute bottom-0 left-1.5 sm:left-2.5 text-red-500 text-sm font-semibold" *ngIf="addressForm.get('land_mark')?.invalid && addressForm.get('land_mark')?.dirty && addressForm.get('land_mark')?.touched">
+        <span *ngIf="addressForm.get('land_mark')?.errors?.['required']">land mark is required.</span>
+        <span *ngIf="addressForm.get('land_mark')?.errors?.['pattern']">Please enter valid land mark.</span>
+      </span>
+    </div>
+    <div class="relative w-full sm:w-1/2 pb-5 px-1.5 sm:px-2.5 space-y-2 xl:space-y-2.5">
+      <span class="xl_titel block">{{"Address Type" | translate}}</span>
+      <!-- <input type="text" class="w-full text-base font-medium text-dark block bg-white border border-l1 rounded-lg outline-none px-5 py-3 mt-2.5"> -->
+      <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" formControlName="address_type">
+        @for (address of addressType; track address) {
+          <mat-radio-button class="example-radio-button" [value]="address">{{address | titlecase | translate}}</mat-radio-button>
+        }
+      </mat-radio-group>
+    </div>
+    <div class="w-full p-1.5 sm:p-2.5">
+      <label for="make_addresss" class="flex space-x-2">
+        <input type="checkbox" name="" id="make_address" formControlName="checkCondition">
+        <span class="text-d4 text-xs lg:text-sm">{{"Make this my default address" | translate}}</span>
+      </label>
+    </div>
+    <div class="w-full p-1.5 sm:p-2.5">
+      <button class="btn_primary anim w-full max-w-24" (click)="saveAddress()">{{"Save" | translate}}</button>
+    </div>
+  </form>
+</div>

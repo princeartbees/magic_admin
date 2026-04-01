@@ -1,0 +1,805 @@
+<section class="pt-24 md:pt-40 xl:pt-48 2xl:pt-56 pb-8 md:pb-18 xl:pb-22 relative bg-d3 overflow-hidden rounded-bl-3xl xl:rounded-bl-[50px] srounded-br-3xl xl:rounded-br-[50px]">
+  <div class="relative wrapper text-center space-y-3.5 z-10">
+    <h1 class="h1">{{"Checkout" | translate}}</h1>
+    <div class="flex items-center justify-center space-x-2">
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer"
+        [routerLink]="'/home'">{{"Home" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-d4 font-normal cursor-pointer"
+        [routerLink]="'/shop'">{{"Shop" | translate}}</span>
+      <span class="icon-star text-14 text-secondary"></span>
+      <span class="text-sm md:text-base lg:text-lg text-primary font-normal">{{"Checkout" | translate}}</span>
+    </div>
+  </div>
+  <img src="./assets/images/tree_bg.webp" class="absolute inset-0 w-full h-full object-cover opacity-20" alt="bg-cover" />
+</section>
+<mat-stepper labelPosition="bottom" #stepper>
+  <mat-step>
+    <span class="order_steps">
+      <p-steps [model]="steps" [(activeIndex)]="activeIndex" [readonly]="false" linear="true" (activeIndexChange)="onStepClicked($event)" class="wrapper pt-24 pb-8 md:pb-18 xl:pb-22 stepper_module checkout_stepper relative z-[-2]"></p-steps>
+      <div class="step-content" *ngIf="getVisibleStepIndex(0) && isWithOutLogIn">
+        <div class="flex items-center justify-center space-x-5 xl:space-x-7">
+          <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '1' : ''}}.</span>
+          <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Your Details" | translate}}</span>
+        </div>
+        <div class="max-w-96 mx-auto mt-10">
+          <div class="checkout-user-detail">
+            <div class="bg-d2 rounded-lg p-5 mb-3.5 xl:mb-5">
+              <form [formGroup]="userForm">
+                  <div class="w-full relative pb-3 lg:pb-5 px-2.5">
+                    <label class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Full Name" | translate}}<span class="inline-block text-red-500">*</span> </label>
+                    <input class="w-full bg-white text-16 text-d5 font-medium px-4 py-3 rounded-[6px] border border-d1 focus:outline-none focus:shadow-outline"
+                      type="text" placeholder="Enter your Full name" formControlName="fullname" />
+                    <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['fullname'].value && userForm.controls['fullname'].hasError('required') && userForm.controls['fullname'].touched">*{{"Please enter Full Name." | translate}}</span>
+                  </div>
+                  <div class="w-full relative pb-3 lg:pb-5 px-2.5">
+                    <label class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Email" | translate}}<span class="inline-block text-red-500">*</span></label>
+                    <input class="w-full bg-white text-16 text-d5 font-medium px-4 py-3 rounded-[6px] border border-d1 focus:outline-none focus:shadow-outline"
+                    type="text" placeholder="Lorem123@gmail.com" formControlName="email" />
+                    <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="userForm.controls['email'].hasError('required') && userForm.controls['email'].touched">*{{ 'Please enter Email.' | translate }}</span>
+                  <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="userForm.controls['email'].hasError('pattern') && userForm.controls['email'].touched">*{{ 'Please enter valid Email.' | translate }}</span>
+                  </div>
+                  <div class="w-full relative loginTel pb-3 lg:pb-5 px-2.5" #phoneF="ngForm" [formGroup]="phoneForm">
+                    <label class="block text-lg font-medium mb-2.5">{{"Mobile Number" | translate}}<span class="inline-block text-red-500">*</span></label>
+                    <ngx-intl-tel-input
+                    [cssClass]="'block w-full'"
+                    [ngClass]="{'tel-invalid' : ((phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)) || (!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched))}"
+                    [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone"></ngx-intl-tel-input>
+                    <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched">*{{"Please enter Contact Number." | translate}}</span>
+                  </div>
+                  <div class="w-full relative pb-3 lg:pb-5 px-2.5">                
+                    <label for="gender" class="block text-lg font-medium">{{"Gender" | translate}}<span class="inline-block text-red-500">*</span></label>
+                    <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" formControlName="gender">
+                      @for (gender of gendersArray; track gender) {
+                        <mat-radio-button class="example-radio-button" [value]="gender">{{gender | titlecase | translate}}</mat-radio-button>
+                      }
+                    </mat-radio-group>
+                    <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['gender'].value && (userForm.controls['gender'].touched && userForm.controls['gender'].invalid)">*{{"Please select gender." | translate}}</span>
+                  </div>
+              </form>  
+            </div>
+          </div>
+          <div class="text-center ">
+            <button class="product_buy_btn py-1.5 sm:py-2.5 lg:py-3.5 max-w-28 xs:max-w-32 md:max-w-44 mx-auto inline-block" pButton label="Next" (click)="onNext()">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="wrapper step-content" *ngIf="getVisibleStepIndex( isWithOutLogIn ? 1 : 0 )">
+         <div class="space-y-3.5 lg:space-y-5">
+          <div class="flex space-x-5 xl:space-x-7">
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '2' : '1'}}.</span>
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Delivery address" | translate}}</span>
+          </div>
+          <div class="address p-3 lg:p-5 rounded-md space-y-4 bg-d2"><!-- *ngIf="!isWithOutLogIn"-->
+            <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group space-y-4" (change)="selectAddressChange($event)" *ngIf="addressDetails?.length > 0 ">
+              <mat-radio-button class="example-radio-button flex align-items-center rounded-md bg-white p-3 px-5" *ngFor="let item of addressDetails;let i = index;" [value]="item._id" [checked]="item?.select"> 
+                {{item?.building}} , {{item?.sector}} , {{item?.city}} , {{item?.state}} , {{item?.pincode}}
+                <span class="text-sm xl:text-base font-medium text-primary underline cursor-pointer ml-auto pl-3" (click)="editAddress(item)">{{"Edit" | translate}}</span>
+              </mat-radio-button>
+            </mat-radio-group>
+            <div class="flex items-center justify-between space-x-3">
+              <div class="space-x-1 flex items-center cursor-pointer" *ngIf="!isAddEditAddress">
+                <span class="inline-block icon-pluse text-14 text-primary"></span>
+                <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center"
+                  (click)="isAddEditAddress = true">{{"Add a new address" | translate}}</span>
+              </div>
+              <div class="space-x-1 flex items-center cursor-pointer" *ngIf="isAddEditAddress">
+                <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center"
+                  (click)="isAddEditAddress = false">{{"Cancel address" | translate}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-5" *ngIf="(!isAddEditAddressLoading && isAddEditAddress) || addressDetails?.length == 0">
+            <app-add-edit-address [addressObj]="selectedAddress"
+              (saveAndAddEditAddress)="addressAddEdit($event)"></app-add-edit-address>
+          </div>
+          <div class="relative mt-5" *ngIf="isAddEditAddressLoading && !isAddEditAddress">
+            <div class="w-full bg-gray-200 animatie-pulse text-xl font-semibold text-dark text-center p-10">
+              {{'please wait' | titlecase}}</div>
+          </div>
+        </div>
+        <div class="mt-2.5 space-x-4">
+          <button *ngIf="isWithOutLogIn" class="product_cancel_btn py-1.5 sm:py-2.5 lg:py-3.5 max-w-28 xs:max-w-32 md:max-w-44 md:mx-0 inline-block" pButton label="Back" (click)="back()">Back</button>
+          <button class="product_buy_btn py-1.5 sm:py-2.5 lg:py-3.5 max-w-28 xs:max-w-32 md:max-w-44 md:mx-0 inline-block" pButton label="Next" (click)="onNextSecondStep()">Next</button>
+        </div>
+      </div>
+      <div class="wrapper step-content" *ngIf="getVisibleStepIndex( isWithOutLogIn ? 2 : 1 )">
+          <div class="flex flex-wrap -mx-3.5">
+          <div class="w-full md:w-7/12 lg:w-8/12 p-3.5 space-y-9 xl:space-y-12">
+            <div class="space-y-3.5 lg:space-y-5">
+              <div class="flex space-x-5 xl:space-x-7">
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '3' : '2'}}.</span>
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Items and Delivery" | translate}}</span>
+              </div>
+
+              <div *ngIf="!isCartListLoading">
+                <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length > 0">
+                  <div class="p-3 rounded-xl bg-d2 flex flex-wrap" *ngFor="let singleProduct of cartList">
+                    <div class="w-full sm:w-1/2 md:w-4/12 lg:w-3/12 p-2.5">
+                      <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                        <img
+                          [src]="singleProduct?.productId?.bannerImage ? constants.baseImageUrl + singleProduct?.productId?.bannerImage : constants.defaultProductImage"
+                          class="max-w-36 w-full aspect-square" alt="product" />
+                      </div>
+                    </div>
+                    <div class="w-full sm:w-1/2 md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                      <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">{{singleProduct?.productId?.product_name}}</span>
+                      <span class="xl_titel text-primary block">{{singleProduct?.inr_gross_amount ? '₹'  + singleProduct?.inr_gross_amount : '$' + singleProduct?.usd_gross_amount}}</span>
+                      <div class="flex items-center space-x-5">
+                        <form class="max-w-20 relative">
+                          <input type="number" readonly id="number-input" [value]="singleProduct?.quantity"
+                            aria-describedby="helper-text-explanation"
+                            class="bg-white border-2 border-primary text-secondary font-medium text-24 lg:text-3xl block w-full h-12 py-1 px-4 sm:pr-7 outline-none"
+                            placeholder="0" />
+                          <div class="absolute inset-y-0 right-0 border-l-2 border-primary">
+                            <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer"
+                              (click)="increaseProductQuantity(singleProduct.sizeId._id,singleProduct)">
+                              <span class="inline-block icon-down-arrow text-[8px] text-secondary rotate-180"></span>
+                            </div>
+                            <div
+                              class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer border-t-2 border-primary"
+                              (click)="decreaseProductQuantity(singleProduct.sizeId._id,singleProduct)">
+                              <span class="inline-block icon-down-arrow text-[8px] text-secondary"></span>
+                            </div>
+                          </div>
+                        </form>
+                        <div class="select-size">
+                          <mat-form-field>
+                            <mat-label>{{"Select Currency" | translate}}</mat-label>
+                            <mat-select (ngModelChange)="changeSize($event,singleProduct)"
+                              [(ngModel)]="singleProduct.sizeId._id" name="size">
+                              <mat-option [value]="item?.sizeId?._id" *ngFor="let item of singleProduct?.sizeDetails">
+                                <div class="flex items-center space-x-3.5">
+                                  <span class="text-base font-medium text-dark">{{item?.sizeId?.size_name}}</span>
+                                </div>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                          <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" (click)="removeProductFromCartList(singleProduct)">Remove</span>
+                          <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" *ngIf="singleProduct?.isProductCoupon && !singleProduct?.isApplyCoupon" (click)="getProductCoupon(singleProduct)">{{"Add on offer" | translate}}</span>
+                          <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" *ngIf="singleProduct?.isProductCoupon && singleProduct?.isApplyCoupon" (click)="cancelApplyProductCoupon(singleProduct)">{{"Remove Offer" | translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length == 0">
+                  <div class="w-full bg-gray-200 rounded-lg p-5 md:p-7">
+                    <span class="block text-base md:text-lg lg:text-xl font-semibold text-gray-600 text-center">{{"Not add any product to cartlist" | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-3 xl:space-y-5" *ngIf="isCartListLoading">
+                <div class="animate-pulse p-3 rounded-xl bg-d2 flex flex-wrap">
+                  <div class="w-full sm:w-1/2  md:w-4/12 lg:w-3/12 p-2.5">
+                    <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                      <img [src]="constants?.defaultProductImage" class="max-w-36 w-full" alt="product" />
+                    </div>
+                  </div>
+                  <div class="w-full sm:w-1/2  md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                    <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">XXXXXXXXXX XXXXXXX
+                      XXXXXXX</span>
+                    <span class="xl_titel text-primary block">₹XXX.XX</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-3.5 lg:space-y-5">
+              <div class="flex space-x-5 xl:space-x-7">
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '4' : '3'}}.</span>
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Payment method" | translate}}</span>
+              </div>
+              <div class="p-5 rounded-md bg-d2">
+                <div class="space-y-3.5 lg:space-y-5">
+                  <div class="flex items-center">
+                    <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">{{"Your available coupon code" | translate}}</span>
+                      <span class="text-16 lg:text-18 xl:text-[22px] text-primary font-medium animate-pulse">&nbsp;({{couponList?.length}} {{"Offers" | translate}})</span>
+                    <span
+                      class="text-16 lg:text-18 xl:text-[22px] text-primary font-semibold underline decoration-primary cursor-pointer ml-auto"
+                      (click)="isOpenCouponList = true">{{"View All" | translate}}</span>
+                  </div>
+                  <!-- <div class="flex items-center space-x-5 w-full">
+                    <input
+                      class="w-full max-w-60 p-3 lg:p-3.5 px-5 outline-none border border-d1 rounded-lg font-medium text-sm lg:text-base"
+                      [(ngModel)]="couponeCodeText" placeholder="00MY0G" type="text" name="" id="cuppon">
+                    <button class="btn_primary anim w-full max-w-28 p-3 lg:p-3.5 px-5"
+                      (click)="applyCouponCode(couponeCodeText)">Apply</button>
+                  </div> -->
+                </div>
+                <span class="block border-b border-d1 my-5"></span>
+                <div class="space-y-3.5 lg:space-y-5">
+                  <div class="w-full">
+                    <span class="block text-16 lg:text-18 xl:text-[22px] text-secondary font-medium pb-4">{{"Select Payment Type code" | translate}}</span>
+                  </div>
+                  <div class="rounded-lg bg-white">
+                    <div class="space-y-2">
+                      <label for="pay_online" class="flex items-center p-5">
+                        <span class="inline-block icon-online-pay text-26 text-secondary"></span>
+                        <div class="ml-3">
+                          <span class="text-sm lg:text-base xl:text-lg text-secondary">{{"Pay With Online" | translate}}</span>
+                          <span class="text-xs lg:text-sm text-d4 block">{{"RazorPay, Stripe, PayPal & more" | translate}}</span>
+                        </div>
+                        <input class="w-5 h-5 accent-primary focus:accent-primary hover:accent-primary ml-auto pl-3"
+                        (ngModelChange)="selectPaymentType($event)" [ngModel]="paymentType" type="radio"
+                        value="online" name="Payment" id="pay_online">
+                      </label>
+                    </div>
+                    <span class="w-[calc(100%-40px)] border-t border-d1 block mx-auto"></span>
+                    <div >
+                      <label for="cash_on_dilvary" class="flex items-center p-5">
+                        <span class="inline-block icon-cod text-3xl text-secondary"></span>
+                        <div class="ml-3">
+                          <span class="text-sm lg:text-base xl:text-lg text-secondary">{{"Cash on delivery" | translate}}</span>
+                          <span class="text-xs lg:text-sm text-d4 block">{{"Pay at your doorstep" | translate}}</span>
+                          <p class="text-sm lg:text-base font-semibold text-d4 block" *ngIf="!isFreeShipping">{{"Shipping Charge" | translate}} <span class="text-sm lg:text-base font-bold"> ₹{{constants.isShippingCharge || 0}}</span> </p><!--&& !isWithOutLogIn-->
+                        </div>
+                        <input class="w-5 h-5 accent-primary focus:accent-primary hover:accent-primary ml-auto pl-3"
+                        (ngModelChange)="selectPaymentType($event)" [ngModel]="paymentType" type="radio" value="cod"
+                        name="Payment" id="cash_on_dilvary"> <!--*ngIf="!isWithOutLogIn"--> <!--(click)="isStatus === false ? $event.preventDefault() : null"-->
+                      </label>
+
+                      <!-- <span class="block text-16 lg:text-xs xl:text-[20px] text-primary font-medium pl-4 pb-4 animate-pulse">{{"Cash on delivery option enables after customer login." | translate}}</span> -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full md:w-5/12 lg:w-4/12 p-3.5 space-y-5">
+            <div class="w-full space-y-5" *ngIf="false">
+              <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">Price Details</span>
+              <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three">
+                <ul class="flex flex-wrap justify-between">
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4">2 Items:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 text-right">₹1196</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Delivery Charges:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-primary pt-3 xl:pt-5 text-right">Free</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Subscription Charge:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">₹8970</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Total:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">₹9269</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Coupon Discount:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-primary pt-3 xl:pt-5 text-right">-₹50</li>
+                </ul>
+                <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                <div class="flex justify-between">
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">Total Payable</span>
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">₹1226</span>
+                </div>
+                <button
+                  class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6">Place
+                  Order</button>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-primary block py-3 xl:py-5 border-b border-d1">Your
+                  Total Savings on this order ₹50s</span>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">Delivery
+                  will take upto 5-7 business days</span>
+              </div>
+            </div>
+            <div class="w-full space-y-5">
+              <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Price Details" | translate}}</span>
+              <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three">
+                <ul class="space-y-3 xl:space-y-5">
+                  <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{priceDetailsObj?.noOfItem}} {{"Items" | translate}} ({{priceDetailsObj?.noOfSubItem}}) :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.subTotal :'$' + priceDetailsObj.subTotal}}</span>
+                  </li>
+                  <!-- <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">Included Tax(18%) :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.total_gst :'$' + priceDetailsObj.total_gst}}</span>
+                  </li> -->
+                  <li class="flex items-center justify-between" *ngIf="paymentType != 'cod'">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Shipping Charge" | translate}} :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{"Free" | translate}}</span>
+                    <!-- <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.inrDeliveryCharges : '$' + priceDetailsObj.usdDeliveryCharges
+                      }}</span> -->
+                  </li> 
+                  <li class="flex items-center justify-between" *ngIf="priceDetailsObj?.shippingCharge && paymentType == 'cod'">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Shipping Charge" | translate}} :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">₹{{priceDetailsObj?.shippingCharge || 0 }}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Total" | translate}} :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.totalAmount :'$' + priceDetailsObj.totalAmount }}</span>
+                  </li>
+                  <li *ngIf="priceDetailsObj?.couponCodesList?.length > 0">
+                    <ul class="space-y-3 xl:space-y-5">
+                      <li class="flex items-center justify-between" *ngFor="let coupone of priceDetailsObj?.couponCodesList">
+                        <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Coupon" | translate}} ({{coupone?.productCoupon?.coupon_code}}) :</span>
+                        <span class="block text-base lg:text-lg xl:text-xl text-primary text-right">{{priceDetailsObj?.currency == 'inr' ? '₹' + coupone.discount_inr_amount : '$' + coupone.discount_usd_amount}}</span>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+                <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                <div class="flex justify-between">
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{"Total Payable" | translate}}</span>
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{priceDetailsObj?.currency ==
+                    'inr' ? '₹' + priceDetailsObj.discountTotalAmount : '$' + priceDetailsObj.discountTotalAmount
+                    }}</span>
+                </div>
+                <!-- <button class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6" (click)="placeOrder()">{{"Place Order" | translate}}</button> -->
+                 <button class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6" (click)="placeOrder()" [disabled]="isPlacingOrder">
+                    {{ isPlacingOrder ? ('Please wait...' | translate) : ('Place Order' | translate) }}
+                  </button>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-primary block py-3 xl:py-5 border-b border-d1" *ngIf="priceDetailsObj.couponeDiscountValue > 0">{{"Your Total Savings on this order" | translate}} {{priceDetailsObj?.currency == 'inr' ? '₹' +
+                  priceDetailsObj.couponeDiscountValue :'$' + priceDetailsObj.couponeDiscountValue }}</span>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">{{"Delivery will take upto 5-7 business days" | translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button class="product_cancel_btn py-1.5 sm:py-2.5 lg:py-3.5 max-w-28 xs:max-w-32 md:max-w-44 md:mx-0 inline-block mt-2.5" pButton label="Back" (click)="back()">Back</button>
+        </div>
+      </div>
+    </span>
+    <!-- <section>
+      <div class="wrapper py-12 lg:py-16 xl:py-24">
+        <div class=" checkout-user-detail space-y-3.5 lg:space-y-5" *ngIf="isWithOutLogIn">
+          <div class="flex space-x-5 xl:space-x-7">
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '1' : ''}}</span>
+            <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Your Details" | translate}}</span>
+          </div>
+          <div class="bg-d2 rounded-lg p-5 mb-10">
+            <form class="flex flex-wrap items-center -mx-2.5" [formGroup]="userForm">
+              <div class="w-full md:w-1/2 lg:w-1/4 relative pb-3 lg:pb-5 px-2.5">
+                <span class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Full Name" | translate}}</span>
+                <input class="w-full bg-white text-16 text-d5 font-medium px-4 py-3 rounded-[6px] border border-d1 focus:outline-none focus:shadow-outline"
+                  type="text" placeholder="Enter your Full name" formControlName="fullname" />
+              
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['fullname'].value && userForm.controls['fullname'].hasError('required') && userForm.controls['fullname'].touched">*{{"Please enter Full Name." | translate}}</span>
+              </div>
+              <div class="w-full md:w-1/2 lg:w-1/4 relative pb-3 lg:pb-5 px-2.5">
+                <span class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Email" | translate}}</span>
+                <input class="w-full bg-white text-16 text-d5 font-medium px-4 py-3 rounded-[6px] border border-d1 focus:outline-none focus:shadow-outline"
+                type="text" placeholder="Lorem123@gmail.com" formControlName="email" />
+                
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['email'].value && userForm.controls['email'].hasError('required') && userForm.controls['email'].touched">*{{"Please enter Email." | translate}}</span>
+              </div>
+              <div class="w-full md:w-1/2 lg:w-1/4 relative loginTel pb-3 lg:pb-5 px-2.5" #phoneF="ngForm" [formGroup]="phoneForm">
+                <label class="block text-lg font-medium mb-2.5">{{"Mobile Number" | translate}}</label>
+                <ngx-intl-tel-input
+                [cssClass]="'block w-full'"
+                [ngClass]="{'tel-invalid' : ((phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)) || (!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched))}"
+                [preferredCountries]="preferredCountries" [enableAutoCountrySelect]="true" [enablePlaceholder]="true" [searchCountryFlag]="true" [searchCountryField]="[SearchCountryField.Iso2,SearchCountryField.Name]" [selectFirstCountry]="false" [selectedCountryISO]="CountryISO.India" [maxLength]="15" [phoneValidation]="true" [separateDialCode]="true" [numberFormat]="PhoneNumberFormat.National" name="phone" formControlName="phone"></ngx-intl-tel-input>
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="phoneF.form.controls['phone'].value && (phoneF.form.controls['phone'].touched && phoneF.form.controls['phone'].invalid)">*{{"Please enter valid Contact Number." | translate}}</span>
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!phoneF.form.controls['phone'].value && phoneF.form.controls['phone'].hasError('required') && phoneF.form.controls['phone'].touched">*{{"Please enter Contact Number." | translate}}</span>
+              </div>
+              <div class="w-full md:w-1/2 lg:w-1/4 relative pb-3 lg:pb-5 px-2.5">
+                <span class="inline-block text-16 lg:text-18 font-medium text-secondary mb-2.5">{{"Enter Pin" | translate}}</span>
+                <div class="relative">
+                  <input [type]="hidePin ? 'password' : 'text'" [formControlName]="'pin'" placeholder="Enter 4 Digit Pin"  class="w-full bg-white text-16 text-d5 font-medium px-4 py-3 rounded-[6px] border border-d1 focus:outline-none focus:shadow-outline pr-14" />
+                  <span class="absolute right-5 top-1/2 -translate-y-1/2 text-lg md:text-xl lg:text-24 leading-10 text-d5 cursor-pointer" [ngClass]="hidePin ? 'icon-eye' : 'icon-close-eye'" (click)="hidePin = !hidePin"></span>
+                </div>
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="userForm.controls['pin'].value && (userForm.controls['pin'].touched && userForm.controls['pin'].invalid)">*{{"Please enter 4 digit PIN in Number." | translate}}</span>
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['pin'].value && userForm.controls['pin'].hasError('required') && userForm.controls['pin'].touched">*{{"Please enter PIN." | translate}}</span>
+                
+              </div>
+              <div class="w-full md:w-1/2 lg:w-1/4 relative pb-3 lg:pb-5 px-2.5">                
+                <label for="gender" class="block text-lg font-medium">{{"Gender" | translate}}</label>
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" formControlName="gender">
+                  @for (gender of gendersArray; track gender) {
+                    <mat-radio-button class="example-radio-button" [value]="gender">{{gender | titlecase | translate}}</mat-radio-button>
+                  }
+                </mat-radio-group>
+                <span class="error-message text-red-500 block absolute bottom-0 left-2.5 text-sm font-semibold" *ngIf="!userForm.controls['gender'].value && (userForm.controls['gender'].touched && userForm.controls['gender'].invalid)">*{{"Please select gender." | translate}}</span>
+              </div>
+            </form>  
+          </div>
+        </div>
+        
+        <div class="flex flex-wrap -mx-3.5">
+          <div class="w-full md:w-7/12 lg:w-8/12 p-3.5 space-y-9 xl:space-y-12">
+            <div class="space-y-3.5 lg:space-y-5">
+              <div class="flex space-x-5 xl:space-x-7">
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '2' : '1'}}</span>
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Delivery address" | translate}}</span>
+              </div>
+              <div class="address p-3 lg:p-5 rounded-md space-y-4 bg-d2">
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group space-y-4" (change)="selectAddressChange($event)" *ngIf="addressDetails?.length > 0 ">
+                  
+                  <mat-radio-button class="example-radio-button flex align-items-center rounded-md bg-white p-3 px-5" *ngFor="let item of addressDetails;let i = index;" [value]="item._id" [checked]="item?.select"> 
+                    {{item?.building}} , {{item?.sector}} , {{item?.city}} , {{item?.state}} , {{item?.pincode}}
+                    <span class="text-sm xl:text-base font-medium text-primary underline cursor-pointer ml-auto pl-3" (click)="editAddress(item)">{{"Edit" | translate}}</span>
+                  </mat-radio-button>
+                </mat-radio-group>
+                <div class="flex items-center justify-between space-x-3">
+                  <div class="space-x-1 flex items-center cursor-pointer" *ngIf="!isAddEditAddress">
+                    <span class="inline-block icon-pluse text-14 text-primary"></span>
+                    <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center"
+                      (click)="isAddEditAddress = true">{{"Add a new address" | translate}}</span>
+                  </div>
+                  <div class="space-x-1 flex items-center cursor-pointer" *ngIf="isAddEditAddress">
+                    <span class="text-sm lg:text-base xl:text-18 font-medium text-primary underline flex items-center"
+                      (click)="isAddEditAddress = false">{{"Cancel address" | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-5" *ngIf="(!isAddEditAddressLoading && isAddEditAddress) || addressDetails?.length == 0">
+                <app-add-edit-address [addressObj]="selectedAddress"
+                  (saveAndAddEditAddress)="addressAddEdit($event)"></app-add-edit-address>
+              </div>
+              <div class="relative mt-5" *ngIf="isAddEditAddressLoading && !isAddEditAddress">
+                <div class="w-full bg-gray-200 animatie-pulse text-xl font-semibold text-dark text-center p-10">
+                  {{'please wait' | titlecase}}</div>
+              </div>
+            </div>
+            <div class="space-y-3.5 lg:space-y-5">
+              <div class="flex space-x-5 xl:space-x-7">
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '3' : '2'}}</span>
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Items and Delivery" | translate}}</span>
+              </div>
+
+              <div  *ngIf="!isCartListLoading">
+                <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length > 0">
+                  <div class="p-3 rounded-xl bg-d2 flex flex-wrap" *ngFor="let singleProduct of cartList">
+                    <div class="w-full sm:w-1/2 md:w-4/12 lg:w-3/12 p-2.5">
+                      <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                        <img
+                          [src]="singleProduct?.productId?.bannerImage ? constants.baseImageUrl + singleProduct?.productId?.bannerImage : constants.defaultProductImage"
+                          class="max-w-36 w-full aspect-square" alt="product" />
+                      </div>
+                    </div>
+                    <div class="w-full sm:w-1/2 md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                      <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">{{singleProduct?.productId?.product_name}}</span>
+                      <span class="xl_titel text-primary block">{{singleProduct?.inr_gross_amount ? '₹'  + singleProduct?.inr_gross_amount : '$' + singleProduct?.usd_gross_amount}}</span>
+                      <div class="flex items-center space-x-5">
+                        <form class="max-w-20 relative">
+                          <input type="number" readonly id="number-input" [value]="singleProduct?.quantity"
+                            aria-describedby="helper-text-explanation"
+                            class="bg-white border-2 border-primary text-secondary font-medium text-24 lg:text-3xl block w-full h-12 py-1 px-4 sm:pr-7 outline-none"
+                            placeholder="0" />
+                          <div class="absolute inset-y-0 right-0 border-l-2 border-primary">
+                            <div class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer"
+                              (click)="increaseProductQuantity(singleProduct.sizeId._id,singleProduct)">
+                              <span class="inline-block icon-down-arrow text-[8px] text-secondary rotate-180"></span>
+                            </div>
+                            <div
+                              class="p-1 flex items-center justify-center w-6 h-6 cursor-pointer border-t-2 border-primary"
+                              (click)="decreaseProductQuantity(singleProduct.sizeId._id,singleProduct)">
+                              <span class="inline-block icon-down-arrow text-[8px] text-secondary"></span>
+                            </div>
+                          </div>
+                        </form>
+                        <div class="select-size">
+                          <mat-form-field>
+                            <mat-label>{{"Select Currency" | translate}}</mat-label>
+                            <mat-select (ngModelChange)="changeSize($event,singleProduct)"
+                              [(ngModel)]="singleProduct.sizeId._id" name="size">
+                              <mat-option [value]="item?.sizeId?._id" *ngFor="let item of singleProduct?.sizeDetails">
+                                <div class="flex items-center space-x-3.5">
+                                  <span class="text-base font-medium text-dark">{{item?.sizeId?.size_name}}</span>
+                                </div>
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                          
+                          <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" *ngIf="singleProduct?.isProductCoupon && !singleProduct?.isApplyCoupon" (click)="getProductCoupon(singleProduct)">{{"Add on offer" | translate}}</span>
+                          <span class="xl_titel text-primary text-xs lg:text-sm underline cursor-pointer" *ngIf="singleProduct?.isProductCoupon && singleProduct?.isApplyCoupon" (click)="cancelApplyProductCoupon(singleProduct)">{{"Remove Offer" | translate}}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="space-y-3 xl:space-y-5" *ngIf="cartList?.length == 0">
+                  <div class="w-full bg-gray-200 rounded-lg p-5 md:p-7">
+                    <span class="block text-base md:text-lg lg:text-xl font-semibold text-gray-600 text-center">{{"Not add any product to cartlist" | translate}}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="space-y-3 xl:space-y-5" *ngIf="isCartListLoading">
+                <div class="animate-pulse p-3 rounded-xl bg-d2 flex flex-wrap">
+                  <div class="w-full sm:w-1/2  md:w-4/12 lg:w-3/12 p-2.5">
+                    <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                      <img [src]="constants?.defaultProductImage" class="max-w-36 w-full" alt="product" />
+                    </div>
+                  </div>
+                  <div class="w-full sm:w-1/2  md:w-8/12 lg:w-9/12 p-2.5 space-y-2">
+                    <span class="block text-base lg:text-lg xl:text-xl font-medium text-secondary">XXXXXXXXXX XXXXXXX
+                      XXXXXXX</span>
+                    <span class="xl_titel text-primary block">₹XXX.XX</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="space-y-3.5 lg:space-y-5">
+              <div class="flex space-x-5 xl:space-x-7">
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{isWithOutLogIn ? '4' : '3'}}</span>
+                <span class="text-18 lg:text-20 xl:text-26 font-bold text-secondary block">{{"Payment method" | translate}}</span>
+              </div>
+              <div class="p-5 rounded-md bg-d2">
+                <div class="space-y-3.5 lg:space-y-5">
+                  <div class="flex items-center">
+                    <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">{{"Your available coupon code" | translate}}</span>
+                      <span class="text-16 lg:text-18 xl:text-[22px] text-primary font-medium animate-pulse">&nbsp;({{couponList?.length}} {{"Offers" | translate}})</span>
+                    <span
+                      class="text-16 lg:text-18 xl:text-[22px] text-primary font-semibold underline decoration-primary cursor-pointer ml-auto"
+                      (click)="isOpenCouponList = true">{{"View All" | translate}}</span>
+                  </div>
+                 
+                </div>
+                <span class="block border-b border-d1 my-5"></span>
+                <div class="space-y-3.5 lg:space-y-5">
+                  <div class="w-full">
+                    <span class="block text-16 lg:text-18 xl:text-[22px] text-secondary font-medium pb-4">{{"Select Payment Type code" | translate}}</span>
+                      <span class="block text-16 lg:text-xs xl:text-[20px] text-primary font-medium animate-pulse">{{"Cash on delivery option enables after customer login." | translate}}</span>
+                  </div>
+                  <div class="rounded-lg bg-white">
+                    <div class="space-y-2">
+                      <label for="pay_online" class="flex items-center p-5">
+                        <span class="inline-block icon-online-pay text-26 text-secondary"></span>
+                        <div class="ml-3">
+                          <span class="text-sm lg:text-base xl:text-lg text-secondary">{{"Pay With Online" | translate}}</span>
+                          <span class="text-xs lg:text-sm text-d4 block">{{"RazorPay, Stripe, PayPal & more" | translate}}</span>
+                        </div>
+                        <input class="w-5 h-5 accent-primary focus:accent-primary hover:accent-primary ml-auto pl-3"
+                          (ngModelChange)="selectPaymentType($event)" [ngModel]="paymentType" type="radio"
+                          value="online" name="Payment" id="pay_online">
+                      </label>
+                    </div>
+                    <span class="w-[calc(100%-40px)] border-t border-d1 block mx-auto"></span>
+                    <div >
+                      
+                      <label for="cash_on_dilvary" class="flex items-center p-5">
+                        <span class="inline-block icon-cod text-3xl text-secondary"></span>
+                        <div class="ml-3">
+                          <span class="text-sm lg:text-base xl:text-lg text-secondary">{{"Cash on delivery" | translate}}</span>
+                          <span class="text-xs lg:text-sm text-d4 block">{{"Pay at your doorstep" | translate}}</span>
+                        </div>
+                        <input  (click)="isStatus === false ? $event.preventDefault() : null" class="w-5 h-5 accent-primary focus:accent-primary hover:accent-primary ml-auto pl-3"
+                          (ngModelChange)="selectPaymentType($event)" [ngModel]="paymentType" type="radio" value="cod"
+                          name="Payment" id="cash_on_dilvary">
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-full md:w-5/12 lg:w-4/12 p-3.5 space-y-5">
+            <div class="w-full space-y-5" *ngIf="false">
+              <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">Price Details</span>
+              <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three">
+                <ul class="flex flex-wrap justify-between">
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4">2 Items:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 text-right">₹1196</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Delivery Charges:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-primary pt-3 xl:pt-5 text-right">Free</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Subscription Charge:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">₹8970</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Total:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5 text-right">₹9269</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-d4 pt-3 xl:pt-5">Coupon Discount:</li>
+                  <li class="w-1/2 text-base lg:text-lg xl:text-xl text-primary pt-3 xl:pt-5 text-right">-₹50</li>
+                </ul>
+                <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                <div class="flex justify-between">
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">Total Payable</span>
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">₹1226</span>
+                </div>
+                <button
+                  class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6">Place
+                  Order</button>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-primary block py-3 xl:py-5 border-b border-d1">Your
+                  Total Savings on this order ₹50s</span>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">Delivery
+                  will take upto 5-7 business days</span>
+              </div>
+            </div>
+            <div class="w-full space-y-5">
+              <span class="text-lg lg:text-xl xl:text-24 font-bold text-secondary block">{{"Price Details" | translate}}</span>
+              <div class="rounded-xl bg-white py-6 px-7 xl:py-8 xl:px-9 shadow-three">
+                <ul class="space-y-3 xl:space-y-5">
+                  <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{priceDetailsObj?.noOfItem}} {{"Items" | translate}} ({{priceDetailsObj?.noOfSubItem}}) :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.subTotal :'$' + priceDetailsObj.subTotal}}</span>
+                  </li>
+                 
+                  <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Delivery Charges" | translate}} :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{"Free" | translate}}</span>
+                    
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Total" | translate}} :</span>
+                    <span class="block text-base lg:text-lg xl:text-xl text-d4 text-right">{{priceDetailsObj?.currency
+                      == 'inr' ? '₹' + priceDetailsObj.totalAmount :'$' + priceDetailsObj.totalAmount }}</span>
+                  </li>
+                  <li *ngIf="priceDetailsObj?.couponCodesList?.length > 0">
+                    <ul class="space-y-3 xl:space-y-5">
+                      <li class="flex items-center justify-between" *ngFor="let coupone of priceDetailsObj?.couponCodesList">
+                        <span class="block text-base lg:text-lg xl:text-xl text-d4">{{"Coupon" | translate}} ({{coupone?.productCoupon?.coupon_code}}) :</span>
+                        <span class="block text-base lg:text-lg xl:text-xl text-primary text-right">{{priceDetailsObj?.currency == 'inr' ? '₹' + coupone.discount_inr_amount : '$' + coupone.discount_usd_amount}}</span>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+                <span class="my-5 lg:my-6 xl:my-8 block border-b border-d1"></span>
+                <div class="flex justify-between">
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{"Total Payable" | translate}}</span>
+                  <span class="xl_titel text-lg lg:text-xl xl:text-[22px] text-primary">{{priceDetailsObj?.currency ==
+                    'inr' ? '₹' + priceDetailsObj.discountTotalAmount : '$' + priceDetailsObj.discountTotalAmount
+                    }}</span>
+                </div>
+                <button
+                  class="btn_primary text-16 xl:text-18 py-3 lg:py-3.5 w-full text-center anim mt-3 sm:mt-5 lg:mt-6"
+                  (click)="placeOrder()">{{"Place Order" | translate}}</button>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-primary block py-3 xl:py-5 border-b border-d1" *ngIf="priceDetailsObj.couponeDiscountValue > 0">{{"Your Total Savings on this order" | translate}} {{priceDetailsObj?.currency == 'inr' ? '₹' +
+                  priceDetailsObj.couponeDiscountValue :'$' + priceDetailsObj.couponeDiscountValue }}</span>
+                <span
+                  class="text-sm sm:text-base lg:text-lg xl:text-[20px] font-medium text-center text-d4 block mt-3 xl:mt-5">{{"Delivery will take upto 5-7 business days" | translate}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+  </mat-step>
+  <mat-step optional>
+    <section>
+      <div class="wrapper py-12 lg:py-16 xl:py-24">
+        <div class="w-full shadow-three rounded-2xl py-7 lg:py-9 px-5 xl:py-12 xl:px-7">
+          <div class="flex items-center justify-center space-x-3">
+            <img src="./assets/images/success.webp" class="w-full max-w-14 sm:max-w-16 xl:max-w-20" alt="success" />
+            <div class="text-center">
+              <span class="text-16 lg:text-18 xl:text-[22px] text-secondary font-medium">{{"Order placed successfully" | translate}},</span>
+              <span class="font-extrabold text-primary text-xl lg:text-24 xl:text-3xl block">{{"Thank You" | translate}}!</span>
+            </div>
+          </div>
+          <span class="my-8 border-t border-d1 block"></span>
+          <div class="w-full rounded-2xl bg-d2 p-4">
+            <div class="flex flex-wrap items-center -mx-2.5 cursor-pointer">
+              <div class="w-full sm:w-2/5 md:w-4/12 lg:w-3/12 xl:w-2/12 p-2.5">
+                <div class="rounded-lg overflow-hidden bg-white p-2 h-full flex items-center justify-center">
+                  <img src="./assets/images/box2.webp" class="max-w-36 w-full" alt="product" />
+                </div>
+              </div>
+              <div class="w-full sm:w-3/5 md:w-8/12 lg:w-9/12 xl:w-10/12 p-2.5 space-y-2">
+                <ul class="space-y-1">
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium Pendingtext-d4">{{"Order Date" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{placedOrderData?.orderAtTimestamp |
+                      date:'dd/MM/yyyy'}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Order Id" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{placedOrderData?.orderId}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Order Status" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                      *ngIf="placedOrderData?.fullfill_status === 'pending'">{{"Pending" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                      *ngIf="placedOrderData?.fullfill_status === 'ready_to_ship'">{{"Rady To Ship" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                      *ngIf="placedOrderData?.fullfill_status === 'in_replace'">{{"Replace in Progress" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#D8A800]"
+                      *ngIf="placedOrderData?.fullfill_status === 'shipped'">{{"Order Shipped" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                      *ngIf="placedOrderData?.fullfill_status === 'replaceaccept'">{{"Replace Accept" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                      *ngIf="placedOrderData?.fullfill_status === 'rto'">{{"Returned" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                      *ngIf="placedOrderData?.fullfill_status === 'cancelled'">{{"Cancelled" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#FF3B30]"
+                      *ngIf="placedOrderData?.fullfill_status === 'replacerejected'">{{"Replace Rejected" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-[#11A75C]"
+                      *ngIf="placedOrderData?.fullfill_status === 'delivered'"> {{"Delivered" | translate}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Quantity" | translate}}</span>
+                    <span
+                      class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{placedOrderData?.total_quantity}}</span>
+                  </li>
+                  <li class="flex items-center justify-between">
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-d4">{{"Total Amount" | translate}}</span>
+                    <span class="w-auto text-xs md:text-sm lg:text-base font-medium text-dark">{{placedOrderData?.currency == 'INR' ? '₹ ' + placedOrderData?.total_pay : '$ ' + placedOrderData?.total_pay}}</span>
+                  </li>
+                  <!-- <li class="flex items-center justify-end">
+                    <span class="block text-xs md:text-sm lg:text-base font-semibold text-primary underline cursor-pointer" (click)="cancelOrder($event, placedOrderData)" *ngIf="placedOrderData?.fullfill_status == 'pending'">Cancel Order</span>
+                  </li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </mat-step>
+</mat-stepper>
+
+<!-- order_complated  -->
+<div class="fixed top-0 left-0" [ngClass]="isOpenCouponList ? 'w-full h-screen z-[9998]' : ''">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"
+    (click)="isOpenCouponList = !isOpenCouponList" *ngIf="isOpenCouponList"></span>
+  <div class="absolute top-0 left-full w-full h-full max-w-xs sm:max-w-md xl:max-w-xl z-[9999] anim"
+    [ngClass]="isOpenCouponList ? '-translate-x-full' : 'translate-x-0'">
+    <!-- <app-coupon-list [isOpen]="isOpenCouponList" (closeSidebar)="closeCouponList()"></app-coupon-list> -->
+    <div id="side-coupon" class="w-full h-full pb-10 lg:pb-10 xl:pb-12 overflow-y-auto bg-d2 anim">
+      <div class="w-full flex items-center space-x-4 p-5 border-b border-d1">
+        <span (click)="isOpenCouponList = false" class="icon-close text-16 lg:text-lg xl:text-xl font-medium inline-block cursor-pointer"></span>
+        <span class="inline-block text-lg lg:text-xl xl:text-26 font-semibold text-secondary">Coupon & Offers</span>
+      </div>
+      <div class="w-full p-5 pt-0" *ngFor="let coupon of couponList">
+        <div class="w-full border-b border-d1 py-3.5 lg:py-5 space-y-2.5 sm:space-y-3 xl:space-y-4">
+          <span class="block text-base lg:text-lg xl:text-[22px] text-secondary font-semibold">{{coupon?.name}}
+            <span>({{coupon.timer}})</span>
+          </span>
+          <span class="block text-xs sm:text-14 xl:text-16 text-d4">{{coupon?.brief}}</span>
+          <div class="flex items-center bg-white px-4 py-2 rounded-md w-max shadow-one">
+            <span #myCode class="block pr-3 xl:pr-4 text-14 xl:text-16 font-medium text-secondary border-r border-d1">{{coupon?.coupon_code}}</span>
+            <span class="block pl-3 xl:pl-4 text-14 xl:text-16 font-medium text-primary underline cursor-pointer" *ngIf="coupon?.isApplyed" (click)="cancelApplyDirectCouponCode(coupon)">Cancel</span>
+            <span class="block pl-3 xl:pl-4 text-14 xl:text-16 font-medium text-primary underline cursor-pointer" *ngIf="!coupon?.isApplyed" (click)="applyDirectCouponCode(coupon)">Apply</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+<!-- order_complated  -->
+<div class="fixed top-0 left-0" [ngClass]="isProductVariantOpen ? 'w-full h-screen z-[9998]' : 'w-0 h-0 z-0'">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"
+    (click)="isProductVariantOpen = !isProductVariantOpen" *ngIf="isProductVariantOpen"></span>
+  <div class="absolute top-0 left-full w-full h-full max-w-xs sm:max-w-md xl:max-w-xl z-[9999] anim"
+    [ngClass]="isProductVariantOpen ? '-translate-x-full' : 'translate-x-0'">
+    <!-- <app-coupon-list [isOpen]="isOpenCouponList" (closeSidebar)="closeCouponList()"></app-coupon-list> -->
+    <div id="side-coupon" class="w-full h-full pb-10 lg:pb-10 xl:pb-12 overflow-y-auto bg-d2 anim">
+      <div class="w-full flex items-center space-x-4 p-5 border-b border-d1">
+        <span (click)="isProductVariantOpen = false" class="icon-close text-16 lg:text-lg xl:text-xl font-medium inline-block cursor-pointer"></span>
+        <span class="inline-block text-lg lg:text-xl xl:text-26 font-semibold text-secondary">Product Coupon & Offers</span>
+      </div>
+      <div class="w-full p-5 pt-0" > <!-- *ngFor="let coupon of couponList" -->
+        <div class="w-full border-b border-d1 py-3.5 lg:py-5 space-y-2.5 sm:space-y-3 xl:space-y-4">
+          <span class="block text-base lg:text-lg xl:text-[22px] text-secondary font-semibold">{{variantCouponData?.variantCouponData?.name}}</span>
+          <span class="block text-xs sm:text-14 xl:text-16 text-d4">{{variantCouponData?.productCoupon?.brief}}</span>
+          <div class="flex items-center bg-white px-4 py-2 rounded-md w-max shadow-one">
+            <span class="block pr-3 xl:pr-4 text-14 xl:text-16 font-medium text-secondary border-r border-d1">{{variantCouponData?.productCoupon?.coupon_code}}</span>
+            <span class="block pl-3 xl:pl-4 text-14 xl:text-16 font-medium text-primary underline cursor-pointer" (click)="applyVariantCoupon(variantCouponData)">Apply</span>
+          </div>
+        </div>
+      </div>
+    </div>    
+  </div>
+</div>
+<div class="fixed top-0 left-0 w-full h-screen z-[50]" *ngIf="isOpenLoginForm">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none" (click)="isOpenLoginForm = !isOpenLoginForm" *ngIf="isOpenLoginForm"></span>
+  <div class="absolute w-full max-w-[540px] top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 z-[9999] anim p-5">
+    <app-login [isUnknowUser]='isOpenLoginForm' (unknowUserlogIn)="unknowUserlogIn($event)"></app-login>
+  </div>
+</div>
+
+<div *ngIf="isPaymentConfirm" class="fixed inset-0 w-full h-full flex items-center justify-center overflow-hidden bg-slate-300/50 backdrop-blur-sm z-[9999]">
+  <div class="flex flex-col items-center justify-center text-center px-5">
+      <!-- <div class="w-12 h-12 rounded-full animate-spin border-4 border-solid border-primary border-t-transparent">
+      </div> -->
+      <img [src]="constants.loadingGif" alt="Magic hair care" class="max-w-[180px] w-full">
+      <div class="-mt-20">
+        <p class="block text-14 xl:text-16 font-medium pt-2">Please Wait</p>
+        <p class="block text-18 xl:text-24 font-semibold text-primary">Do not press back button until you get payment confirmation.</p>
+      </div>
+  </div>
+</div>
+
+<div class="fixed inset-0 w-full h-screen flex overflow-y-auto z-[998]" *ngIf="isOpenOtpVeryFicationForm" id="btnClose">
+  <span class="fixed inset-0 w-full h-full block bg-black/30 backdrop-blur-sm pointer-events-none"></span> <!--  (click)="isOpenOtpVeryFicationForm = !isOpenOtpVeryFicationForm" *ngIf="isOpenOtpVeryFicationForm" -->
+  <div class="relative z-[999] m-auto py-7 px-3.5 scroll_not anim">
+    <app-otp-veryfication [isUnknowUser]='isOpenOtpVeryFicationForm' (unKnowUserVeryFiedOtp)="unKnowUserVeryFiedOtp($event)"></app-otp-veryfication>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<div id="side-coupon" class="w-full h-full pb-10 lg:pb-10 xl:pb-12 overflow-y-auto bg-d2 anim">
+  <div class="w-full flex items-center space-x-4 p-5 border-b border-d1">
+    <span (click)="onClose()" class="icon-close text-16 lg:text-lg xl:text-xl font-medium inline-block cursor-pointer"></span>
+    <span class="inline-block text-lg lg:text-xl xl:text-26 font-semibold text-secondary">{{"Coupon & Offers" | translate}}</span>
+  </div>
+  <div class="w-full p-5 pt-0" *ngFor="let coupon of couponList">
+    <div class="w-full border-b border-d1 py-3.5 lg:py-5 space-y-2.5 sm:space-y-3 xl:space-y-4">
+      <span class="block text-base lg:text-lg xl:text-[22px] text-secondary font-semibold">{{coupon?.name}}
+        <span>({{coupon.timer}})</span>
+      </span>
+      <span class="block text-xs sm:text-14 xl:text-16 text-d4">{{coupon?.brief}}</span>
+      <div class="flex items-center bg-white px-4 py-2 rounded-md w-max shadow-one">
+        <span #myCode class="block pr-3 xl:pr-4 text-14 xl:text-16 font-medium text-secondary border-r border-d1">{{coupon?.coupon_code}}</span>
+        <span class="block pl-3 xl:pl-4 text-14 xl:text-16 font-medium text-primary underline cursor-pointer" (click)="copyCouponCode(myCode)">{{"Copy" | translate}}</span>
+      </div>
+    </div>
+  </div>
+</div>
